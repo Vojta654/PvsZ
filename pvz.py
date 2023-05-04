@@ -47,6 +47,13 @@ def game_input():
 def game_update():
     draw_board()
     pygame.display.flip()
+    
+    
+def game_output():
+    ...   
+    
+    
 while True:
-    game_update()
     game_input()
+    game_update()
+    game_output()
