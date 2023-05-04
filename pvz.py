@@ -20,8 +20,6 @@ for y in range(0, BOARD_SIZE_Y, 1):
         row.append(0)
     board.append(row)
 
-current_square = (-1, -1)
-player_turn = 1
 for i in range(BOARD_SIZE_Y):
     board[i][0] = 1
 
