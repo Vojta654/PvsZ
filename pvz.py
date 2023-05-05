@@ -8,12 +8,6 @@ MENU_SIZE = 60
 MENU_COLOR = (100, 100, 250)
 
 
-SQUARE_HOVER_COLOR = (150, 150, 150)
-CIRCLE_COLOR = (0, 255, 0)
-CROSS_COLOR = (0, 0, 255)
-COLOR_BLUE = (0, 0, 255)
-
-
 board = []
 for y in range(0, BOARD_SIZE_Y, 1):
     row = []
