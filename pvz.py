@@ -52,3 +52,6 @@ while True:
     game_input()
     game_update()
     game_output()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
