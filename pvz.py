@@ -15,12 +15,16 @@ MENU_COLOR = (100, 100, 250)
 BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 10
 bullets = [] # (x,y)
+#vytvoření cvičných kulek
 for index in range(5):
     bullets.append(( 1.5 * SQUARE_SIZE - BULLET_SIZE/2, (index+0.5)*SQUARE_SIZE + MENU_SIZE - BULLET_SIZE/2))
 
+#příprava na umisťování rostlin
+plant_loc = []
+
+
 
 board = []
-
 for y in range(0, BOARD_SIZE_Y, 1):
     row = []
     for x in range(0, BOARD_SIZE_X, 1):
