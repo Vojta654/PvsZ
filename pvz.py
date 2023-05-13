@@ -135,7 +135,7 @@ showed_zombies.add(player)
 while True:
     game_input()
     game_update()
-    #game_output()
+    game_output()
     loc_X -= 1
     print(loc_X)
     player = Player(loc_X, loc_Y)
