@@ -1,5 +1,5 @@
-import pygame
-import sys
+import pygame,sys, os
+
 
 pygame.init()
 
@@ -19,12 +19,16 @@ BULLET_SIZE = 30
 bullets = []  # (x,y)
 loc_X = 500
 loc_Y = 100
-
+ZOMBIE_SPEED = 0.8 # o kolik se posunou za jedent tik
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKybl = pygame.image.load("data/zombieKybl.png")
 peashooter = pygame.image.load("data/peashooter.png")
-
+zombieImages = []
+Z_START_LOCATION = 9.5 * SQUARE_SIZE_X
+for i in range(22):
+    img = pygame.image.load(os.path.join("data", "Zombie_" + str(i) + ".png"))
+    zombieImages.append(img)
 window = pygame.display.set_mode((BOARD_SIZE_X * SQUARE_SIZE_X, (BOARD_SIZE_Y * SQUARE_SIZE_Y) + MENU_SIZE))
 
 # příprava na umisťování rostlin - bude použit podobný kod jako v gomoku
@@ -102,45 +106,35 @@ def game_output():
     create_bullets()
     move_bullets()
 
+zombieCoords  = []
+for i in range(1, 6):
+    zombieCoords.append([Z_START_LOCATION, i*SQUARE_SIZE_Y, 1])
 
+#zombieCoords = [[1000, 300, 1], [1000, 500, 10]]
 def zombie_moveing():  # pohyb zombi, asi bude potřeba vytvořit další funkci na vytváření zombie a pole s jejich lokací
     pass
 
-#pokus o animované obrázky, buď funguje animace, nebo pohyb. Na animaci zatím kašlem a tedy půjde uělat pohyb mnihem jednodušeji
-class Player(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
-        super().__init__()
+def showZombie():
+    for i in range(len(zombieCoords)):
+        zombie_x = zombieCoords[i][0]
+        zombie_y = zombieCoords[i][1]
+        currentZombie = zombieCoords[i][2]
+        currentZombie += 1
+        zombie_x -= ZOMBIE_SPEED
+        if currentZombie == len(zombieImages):
+            currentZombie = 0
+        zombieCoords[i][0] = zombie_x
+        zombieCoords[i][2] = currentZombie
+        window.blit(zombieImages[currentZombie], (zombie_x, zombie_y))
 
-        self.sprites = []
-        self.sprites.append(pygame.image.load("data/Zombie_1.png"))
-
-        self.image = self.sprites[0]
-
-        self.rect = self.image.get_rect()
-        self.rect.center = [pos_x, pos_y]
-
-    def update(self):
-        self.image = self.sprites[0]
-        pygame.sprite.Group.empty(showed_zombies)
-        showed_zombies.add(player)
-
-
-showed_zombies = pygame.sprite.Group()
-
-pygame.display.set_caption("idk")
-player = Player(loc_X, loc_Y)
-showed_zombies.add(player)
-# game loop
-
+currentZombie = 0
+zombie_location_Y = 500
 while True:
     game_input()
     game_update()
     game_output()
-    loc_X -= 1
-    print(loc_X)
-    player = Player(loc_X, loc_Y)
-    showed_zombies.draw(window)
-    showed_zombies.update()
+    showZombie()
+
     pygame.display.flip()
     clock.tick(30)
 
