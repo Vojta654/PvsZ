@@ -19,6 +19,8 @@ BULLET_SIZE = 30
 bullets = []  # (x,y)
 loc_X = 500
 loc_Y = 100
+
+
 ZOMBIE_SPEED = 0.8 # o kolik se posunou za jedent tik
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
