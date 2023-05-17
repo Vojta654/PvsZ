@@ -50,10 +50,8 @@ def draw_board():
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER)
     #window.blit(zombieKybl, (300, 480))
 
-    for index in range(1, 6):
-        window.blit(c.peashooter, (130, 10 + index * c.SQUARE_SIZE_Y))
 
-
+print(board)
 # input - možnost vybírání a pokládání rostlin
 def game_input():
     for event in pygame.event.get():
@@ -88,6 +86,7 @@ def game_output():
     create_bullets()
     move_bullets()
     showZombie()
+    draw_plants()
 
 
 zombieCoords  = []
@@ -98,6 +97,15 @@ for i in range(1, 6):
 def zombie_moveing():  # pohyb zombi, asi bude potřeba vytvořit další funkci na vytváření zombie a pole s jejich lokací
     pass
 
+def draw_plants():
+    for ind in range(c.BOARD_SIZE_Y):
+        line = board[ind]
+        for j in range(len(line)):
+            square = line[j]
+            if square == 2:
+                window.blit(c.peashooter, (j*c.SQUARE_SIZE_X, ind * c.SQUARE_SIZE_Y))#sunflower
+            elif square ==3:
+                window.blit(c.peashooter, (j * c.SQUARE_SIZE_X, ind * c.SQUARE_SIZE_Y))#peashooter
 def showZombie():
     for i in range(len(zombieCoords)):
         zombie_x = zombieCoords[i][0]
