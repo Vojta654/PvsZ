@@ -45,8 +45,9 @@ def draw_board():
 
     # test pokládání rostlin a zombie
     window.blit(c.peashooter, (10, 10))
+    window.blit(c.sunflower, (c.SQUARE_SIZE_X, 10))
     #window.blit(zombie, (500, 10))
-
+    pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER)
     #window.blit(zombieKybl, (300, 480))
 
     for index in range(1, 6):
