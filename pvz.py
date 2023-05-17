@@ -103,9 +103,9 @@ def draw_plants():
         for j in range(len(line)):
             square = line[j]
             if square == 2:
-                window.blit(c.peashooter, (j*c.SQUARE_SIZE_X, ind * c.SQUARE_SIZE_Y))#sunflower
+                window.blit(c.sunflower, (j*c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y))#sunflower
             elif square ==3:
-                window.blit(c.peashooter, (j * c.SQUARE_SIZE_X, ind * c.SQUARE_SIZE_Y))#peashooter
+                window.blit(c.peashooter, (j * c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y))#peashooter
 def showZombie():
     for i in range(len(zombieCoords)):
         zombie_x = zombieCoords[i][0]
