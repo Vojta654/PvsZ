@@ -107,6 +107,8 @@ def move_bullets():  # updatuje polohu střel, je potřeba pole, kde jsou ulože
 def game_output():
     create_bullets()
     move_bullets()
+    showZombie()
+
 
 zombieCoords  = []
 for i in range(1, 6):
@@ -120,22 +122,22 @@ def showZombie():
     for i in range(len(zombieCoords)):
         zombie_x = zombieCoords[i][0]
         zombie_y = zombieCoords[i][1]
-        currentZombie = zombieCoords[i][2]
-        currentZombie += 1
+        currentZombieImage = zombieCoords[i][2]
+        currentZombieImage += 1
         zombie_x -= ZOMBIE_SPEED
-        if currentZombie == len(zombieImages):
-            currentZombie = 0
+        if currentZombieImage == len(zombieImages):
+            currentZombieImage = 0
         zombieCoords[i][0] = zombie_x
-        zombieCoords[i][2] = currentZombie
-        window.blit(zombieImages[currentZombie], (zombie_x, zombie_y))
+        zombieCoords[i][2] = currentZombieImage
+        window.blit(zombieImages[currentZombieImage], (zombie_x, zombie_y))
 
 currentZombie = 0
-zombie_location_Y = 500
+
 while True:
     game_input()
     game_update()
     game_output()
-    showZombie()
+
 
     pygame.display.flip()
     clock.tick(30)
