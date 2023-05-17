@@ -6,6 +6,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 
+
 for i in range(22):
     img = pygame.image.load(os.path.join("data", "Zombie_" + str(i) + ".png"))
     c.zombieImages.append(img)
