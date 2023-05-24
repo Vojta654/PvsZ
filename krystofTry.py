@@ -1,5 +1,7 @@
 import time
-
+pole = [[[1, 3], [2, 3]], [[5, 4],[4, 4] ]]
+print(str(pole[0][0][0]))
+print(pole)
 def timer():
     start_time = None
     while True:

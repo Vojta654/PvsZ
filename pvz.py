@@ -1,4 +1,4 @@
-import pygame,sys, os
+import pygame,sys, os, random
 import Constants as c
 
 pygame.init()
@@ -78,9 +78,10 @@ def game_output():
 print(c.MONEY_COUNTER_BOX)
 
 #test zobrazení normálních zombíků
-normalZombiesList  = []
+normalZombiesList  = [[],[],[],[],[]]
 for i in range(1, 6):
-    normalZombiesList.append([c.ZOMBIE_START_LOCATION, i*c.SQUARE_SIZE_Y, 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
+    print(str(i))
+    normalZombiesList[i-1].append([c.ZOMBIE_START_LOCATION, i*c.SQUARE_SIZE_Y, 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
 
 #podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
 def draw_plants():
@@ -94,20 +95,24 @@ def draw_plants():
                 window.blit(c.peashooterImage, (j * c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y))#peashooter
 
 def updateNormalZombie():
-    for i in range(len(normalZombiesList)):
-        zombie_x = normalZombiesList[i][0]
-        zombie_y = normalZombiesList[i][1]
-        currentZombieImage = normalZombiesList[i][2]
-        currentZombieImage += 1 #další snímek v animaci
-        zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-        if currentZombieImage == len(c.NormalZombieImages):
-            currentZombieImage = 0
-        #uložení změněných hodnot
-        normalZombiesList[i][0] = zombie_x
-        normalZombiesList[i][2] = currentZombieImage
-        #zobrazení
-        window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
+    for line in range(len(normalZombiesList)): #pro každý řádek
+        for zombik in range(len(normalZombiesList[line])):
+            zombie_x = normalZombiesList[line][zombik][0]
+            zombie_y = normalZombiesList[line][zombik][1]
+            currentZombieImage = normalZombiesList[line][zombik][2]
+            currentZombieImage += 1 #další snímek v animaci
+            zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
+            if currentZombieImage == len(c.NormalZombieImages):
+                currentZombieImage = 0
+            #uložení změněných hodnot
+            normalZombiesList[line][zombik][0] = zombie_x
+            normalZombiesList[line][zombik][2] = currentZombieImage
+            #zobrazení
+            window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
 
+
+def gamelevel_one():
+    pass
 
 
 while True:
