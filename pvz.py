@@ -50,6 +50,11 @@ def draw_board():
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER)
     #window.blit(zombieKybl, (300, 480))
 
+    font = pygame.font.Font("HERMES 1943.ttf", 40)
+    text = font.render("pokus",True, c.BLACK)
+    window.blit(text, (c.SQUARE_SIZE_X * 8, 10))
+
+
     for index in range(1, 6):
         window.blit(c.peashooter, (130, 10 + index * c.SQUARE_SIZE_Y))
 
