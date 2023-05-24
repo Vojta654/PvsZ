@@ -38,18 +38,41 @@ def draw_board():
     #menu - obrázky rostlin + box na počítání peněz
     window.blit(c.peashooterImage, (10, 10))
     window.blit(c.sunflowerImage, (c.SQUARE_SIZE_X, 10))
-    pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX)
-
+    pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
     text = font.render('Sluníčka', True, c.BLACK)
     window.blit(text, (c.SQUARE_SIZE_X * 8, 25))
+
+
+
 # input - možnost vybírání a pokládání rostlin
 def game_input():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
+        elif event.type == pygame.KEYDOWN:
+            on_key_down(event)
+        elif event.type == pygame.MOUSEMOTION:
+            on_mouse_motion(event)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            on_mouse_down(event)
 
 
+def on_mouse_down(event):
+    global current, plant_type
+    print(current)
+    x,y = current
+    board[y-1][x] = plant_type
+    plant_type = 0
+
+plant_type = 0
+def on_key_down(event):
+    global plant_type
+    print(plant_type)
+    if event.key == pygame.K_q:
+        plant_type = 2
+    elif event.key == pygame.K_w:
+        plant_type = 3
 def game_update():
     draw_board()
 
@@ -93,9 +116,19 @@ def draw_plants():
         for j in range(len(line)):
             square = line[j]
             if square == 2:
-                window.blit(c.sunflowerImage, (j*c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y))#sunflower
+                window.blit(c.sunflowerImage, (j*c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y+10))#sunflower
             elif square ==3:
-                window.blit(c.peashooterImage, (j * c.SQUARE_SIZE_X, (ind + 1) * c.SQUARE_SIZE_Y))#peashooter
+                window.blit(c.peashooterImage, (j * c.SQUARE_SIZE_X+10, (ind + 1) * c.SQUARE_SIZE_Y+20))#peashooter
+
+print(board)
+current = 0
+def on_mouse_motion(event):
+    global current
+    mx, my = event.pos
+    x = mx // c.SQUARE_SIZE_X
+    y = my // c.SQUARE_SIZE_Y
+    current = x, y
+
 
 def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
