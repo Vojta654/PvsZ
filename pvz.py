@@ -40,6 +40,9 @@ def draw_board():
     window.blit(c.sunflowerImage, (c.SQUARE_SIZE_X, 10))
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX)
 
+    font = pygame.font.Font('HERMES 1943.ttf', 32)
+    text = font.render('Sluníčka', True, c.BLACK)
+    window.blit(text, (c.SQUARE_SIZE_X * 8, 25))
 # input - možnost vybírání a pokládání rostlin
 def game_input():
     for event in pygame.event.get():
