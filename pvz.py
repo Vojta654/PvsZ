@@ -5,7 +5,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 window = pygame.display.set_mode((c.BOARD_SIZE_X * c.SQUARE_SIZE_X, (c.BOARD_SIZE_Y * c.SQUARE_SIZE_Y) + c.MENU_SIZE))
-
+time = 0
 
 # vykreslení hrací plochy v listu - je použito k uložení pozic rostlin
 board = []
@@ -99,15 +99,13 @@ def move_bullets():  # updatuje polohu střel, je potřeba pole, kde jsou ulože
 def game_output():
     create_bullets()
     move_bullets()
+    gamelevel_one()
     updateNormalZombie()
     draw_plants()
 print(c.MONEY_COUNTER_BOX)
 
 #test zobrazení normálních zombíků
 normalZombiesList  = [[],[],[],[],[]]
-for i in range(1, 6):
-    print(str(i))
-    normalZombiesList[i-1].append([c.ZOMBIE_START_LOCATION, i*c.SQUARE_SIZE_Y, 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
 
 #podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
 def draw_plants():
@@ -147,8 +145,16 @@ def updateNormalZombie():
             window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
 
 
+def create_normal_zombie(lineNum):
+    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, (lineNum+1)*c.SQUARE_SIZE_Y, 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
+
 def gamelevel_one():
-    pass
+    if round(time, 2) == 10:
+        create_normal_zombie(random.randint(0, 4))
+    if round(time, 2) == 15:
+        create_normal_zombie(random.randint(0, 4))
+    if round(time, 2) == 15:
+        create_normal_zombie(random.randint(0, 4))
 
 
 while True:
@@ -156,5 +162,6 @@ while True:
     game_update()
     game_output()
     pygame.display.flip()
+    time += (1/30)
     clock.tick(30)
 
