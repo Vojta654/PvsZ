@@ -1,6 +1,7 @@
 import pygame,sys, os, random
 import Constants as c
-
+bullets = []
+plants = []
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -54,58 +55,67 @@ def game_input():
             on_key_down(event)
         elif event.type == pygame.MOUSEMOTION:
             on_mouse_motion(event)
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            on_mouse_down(event)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            on_mouse_up(event)
 
 
-def on_mouse_down(event):
+def on_mouse_up(event):
     global current, plant_type
-    print(current)
     x,y = current
     board[y-1][x] = plant_type
+    if plant_type == 3:
+        #print(str(plants) + "prvni")
+        plants.append([(x + 0.6)*c.SQUARE_SIZE_X, (y + 0.2) * c.SQUARE_SIZE_Y, 0])
+        #print(plants)
     plant_type = 0
 
 plant_type = 0
 def on_key_down(event):
     global plant_type
-    print(plant_type)
-    if event.key == pygame.K_q:
+    if event.key == pygame.K_q:#sunflower
         plant_type = 2
-    elif event.key == pygame.K_w:
+    elif event.key == pygame.K_w: #peashooter
         plant_type = 3
+        
+    
 def game_update():
     draw_board()
 
 
 # vytvoření cvičných kulek
-for index in range(5):
-    c.bullets.append((1.5 * c.SQUARE_SIZE_X, c.MENU_SIZE + (index + 0.5) * c.SQUARE_SIZE_Y - c.BULLET_SIZE / 2))
 
 
 # bude voláno pomocí nějakého časovače, možná bude potřeba předat nějkaý parametr
-def create_bullets():  # střela se vytvoří na souřadnici rostliny (bude přepočet na potřenné místo) a její souřadnice se bullets.append((x,y)), pak budou muset bý mazány
-
-    for coords in c.bullets:
-        x, y = coords
-        pygame.draw.rect(window, c.BULLET_COLOR, (x, y, c.BULLET_SIZE, c.BULLET_SIZE))
-
-
+def create_bullets():# střela se vytvoří na souřadnici rostliny (bude přepočet na potřenné místo) a její souřadnice se bullets.append((x,y)), pak budou muset bý mazány 
+    for plant_bullet in plants:
+        if plant_bullet[2]%135 == 0:
+            bullets.append([plant_bullet[0], plant_bullet[1]])
+        plant_bullet[2] += 1
+    
+    
 def move_bullets():  # updatuje polohu střel, je potřeba pole, kde jsou uloženz polohy každé střely - bullets[g
-    for index in range(len(c.bullets)):
-        x, y = c.bullets[index]
-        c.bullets[index] = x + c.BULLET_SPEED, y
+    for bullet in bullets:
+        bullet_loc_x = bullet[0]
+        bullet_loc_x += c.PEASHOOTER_SPEED
+        bullet[0] = bullet_loc_x        
+        pygame.draw.rect(window, c.BULLET_COLOR, (bullet_loc_x, bullet[1], c.BULLET_SIZE, c.BULLET_SIZE))
+        if bullet[0] > 1200:
+            bullets.remove(bullet)
+        
+            
 
 
 def game_output():
+    draw_plants()
     create_bullets()
     move_bullets()
     gamelevel_one()
     updateNormalZombie()
-    draw_plants()
-print(c.MONEY_COUNTER_BOX)
+    
 
-#test zobrazení normálních zombíků
-normalZombiesList  = [[],[],[],[],[]]
+
+
+normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
 
 #podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
 def draw_plants():
@@ -118,7 +128,7 @@ def draw_plants():
             elif square ==3:
                 window.blit(c.peashooterImage, (j * c.SQUARE_SIZE_X+10, (ind + 1) * c.SQUARE_SIZE_Y+20))#peashooter
 
-print(board)
+
 current = 0
 def on_mouse_motion(event):
     global current
@@ -126,7 +136,6 @@ def on_mouse_motion(event):
     x = mx // c.SQUARE_SIZE_X
     y = my // c.SQUARE_SIZE_Y
     current = x, y
-
 
 def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
@@ -165,3 +174,6 @@ while True:
     time += (1/30)
     clock.tick(30)
 
+# 1. Z indexu cisel => na indexy slovne, takze misto plant[0] => plant.x
+# 2. Funkce na vykreslovani, bez nutnost 20* to vypisovat do kodu
+# rozdeleni Plantu od peanatu a prosim citelnost !!

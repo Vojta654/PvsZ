@@ -1,5 +1,4 @@
 import time
-
 def timer():
     start_time = None
     while True:
