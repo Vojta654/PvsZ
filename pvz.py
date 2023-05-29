@@ -59,15 +59,15 @@ def game_input():
             on_mouse_up(event)
 
 
-def on_mouse_up(event):
-    global current, plant_type
-    x,y = current
-    board[y-1][x] = plant_type
-    if plant_type == 3:
-        #print(str(plants) + "prvni")
-        plants.append([(x + 0.6)*c.SQUARE_SIZE_X, (y + 0.2) * c.SQUARE_SIZE_Y, 0])
-        #print(plants)
-    plant_type = 0
+
+current = 0
+def on_mouse_motion(event):
+    global current
+    mx, my = event.pos
+    x = mx // c.SQUARE_SIZE_X
+    y = my // c.SQUARE_SIZE_Y
+    current = x, y
+
 
 plant_type = 0
 def on_key_down(event):
@@ -76,24 +76,33 @@ def on_key_down(event):
         plant_type = 2
     elif event.key == pygame.K_w: #peashooter
         plant_type = 3
-        
-    
+     
+     
+     
+def on_mouse_up(event):
+    global current, plant_type
+    x,y = current
+    if y > 0:
+        board[y-1][x] = plant_type
+        if plant_type == 3:
+            plants.append([(x + 0.6)*c.SQUARE_SIZE_X, (y + 0.2) * c.SQUARE_SIZE_Y, 0])
+    plant_type = 0
+
+   
 def game_update():
     draw_board()
 
 
-# vytvoření cvičných kulek
 
 
-# bude voláno pomocí nějakého časovače, možná bude potřeba předat nějkaý parametr
-def create_bullets():# střela se vytvoří na souřadnici rostliny (bude přepočet na potřenné místo) a její souřadnice se bullets.append((x,y)), pak budou muset bý mazány 
+def create_bullets():
     for plant_bullet in plants:
         if plant_bullet[2]%135 == 0:
             bullets.append([plant_bullet[0], plant_bullet[1]])
         plant_bullet[2] += 1
     
     
-def move_bullets():  # updatuje polohu střel, je potřeba pole, kde jsou uloženz polohy každé střely - bullets[g
+def move_bullets():  # updatuje polohu střel
     for bullet in bullets:
         bullet_loc_x = bullet[0]
         bullet_loc_x += c.PEASHOOTER_SPEED
@@ -128,14 +137,6 @@ def draw_plants():
             elif square ==3:
                 window.blit(c.peashooterImage, (j * c.SQUARE_SIZE_X+10, (ind + 1) * c.SQUARE_SIZE_Y+20))#peashooter
 
-
-current = 0
-def on_mouse_motion(event):
-    global current
-    mx, my = event.pos
-    x = mx // c.SQUARE_SIZE_X
-    y = my // c.SQUARE_SIZE_Y
-    current = x, y
 
 def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
