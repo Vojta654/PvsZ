@@ -7,3 +7,4 @@ Jednotlivé kroky
 5. při kontaktu střely a zombíka, se zombíkovi uberou HP a střela zmizí
 6. zombík ubírá HP kytkám
 
+udělat hover menu
