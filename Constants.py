@@ -19,7 +19,6 @@ RED = (255, 0, 0)
 #bullets setting
 BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 30
-BULLET_SPEED = 1
 bullets = []  # (x,y)
 PEASHOOTER_SPEED = 5
 
