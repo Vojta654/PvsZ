@@ -12,6 +12,7 @@ MONEY_COUNTER_BOX = (SQUARE_SIZE_X * 8, 10, SQUARE_SIZE_X *2 - 10, SQUARE_SIZE_Y
 
 #colors
 BLACK = (0, 0, 0) # menu buttons backgrounb color
+GREY = (169,169,169)
 WHITE = (255,255,255)
 GREEM = (0, 255, 0)
 BLUE = (0, 0, 255)
