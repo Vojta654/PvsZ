@@ -29,6 +29,7 @@ for i in range(c.BOARD_SIZE_Y):  # tam kde bude jedna se dají sekačky
 
 
 def draw_board():
+    global plant_type
     window.fill(c.SQUARE01_COLOR)
     odd = 0
     pygame.draw.rect(window, c.MENU_COLOR, (0, 0, count_x(c.BOARD_SIZE_X), c.MENU_SIZE))
@@ -41,11 +42,15 @@ def draw_board():
             pygame.draw.rect(window, c.SQUARE02_COLOR, (count_x(index + odd), count_y(j) + c.MENU_SIZE, c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
     # menu - vykreslení polí, na kterých bude možno vybírat kytky k položení
     for index in range(3):
-        pygame.draw.rect(window, c.BLACK, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
+        if index +2 == plant_type:
+            color = c.BLACK
+        else:
+            color = c.GREY
+        pygame.draw.rect(window, color, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
 
     #menu - obrázky rostlin + box na počítání peněz
-    window.blit(c.peashooterImage, (10, 10))
-    window.blit(c.sunflowerImage, (c.SQUARE_SIZE_X, 10))
+    window.blit(c.peashooterImage, (c.SQUARE_SIZE_X +10, 20))
+    window.blit(c.sunflowerImage, (0, 10))
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
     text = font.render('Sluníčka', True, c.BLACK)
@@ -88,11 +93,11 @@ def on_key_down(event):
 def on_mouse_up(event):
     global current, plant_type
     x,y = current
-    if y > 0:
+    if y > 0 and board[y-1][x] == 0:
         board[y-1][x] = plant_type
         if plant_type == 3:
             plants.append([count_x(x + 0.6), count_y(y + 0.2), 0])
-    plant_type = 0
+        plant_type = 0
 
    
 def game_update():
