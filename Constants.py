@@ -21,7 +21,7 @@ RED = (255, 0, 0)
 BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 30
 bullets = []  # (x,y)
-PEASHOOTER_SPEED = 5
+PEASHOOTER_SPEED = 8
 
 
 # image load - potřeba vybrat správnou velikost
@@ -33,8 +33,8 @@ peashooterImage = pygame.image.load("data/peashooter.png")
 sunflowerImage = pygame.image.load("data/sunflower.png")
 sunImage = pygame.image.load("data/sun.png")
 #NormalZombie
-NormalZombieHP = 4
-ZOMBIE_SPEED = 1 # o kolik se posunou za jedent tik
+NormalZombieHP = 3
+ZOMBIE_SPEED = 0.8 # o kolik se posunou za jedent tik
 NormalZombieImages = []
 for i in range(22):
     img = pygame.image.load(os.path.join("data/NormalZombie", "Zombie_" + str(i) + ".png"))

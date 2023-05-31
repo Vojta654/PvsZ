@@ -95,12 +95,12 @@ def on_key_down(event):
         if sunCoin >= 50:
             plant_type = 2
         elif sunCoin < 50:
-            plant_type = 4
+            plant_type = 2
     elif event.key == pygame.K_w: #peashooter
         if sunCoin >= 100:
             plant_type = 3
         elif sunCoin < 100:
-            plant_type = 4
+            plant_type = 0
      
      
      
@@ -121,13 +121,13 @@ def on_mouse_down(event):
     global sunCoin, current
     x,y = current
     for sun in suns:
-        print(sun)
         if x == sun[0] // c.SQUARE_SIZE_X and y == sun[1]// c.SQUARE_SIZE_Y:
-            sunCoin += 25
+            sunCoin += 250
             suns.remove(sun)
 
 def game_update():
     draw_board()
+    check_contact()
 
 
 
@@ -161,16 +161,17 @@ def draw_suns():
 
 def check_contact():
     for bullet in bullets:
-        line = int(bullet[1] // c.SQUARE_SIZE_X) -1
-        print(line)
+        line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) >0:
-            if bullet[0] == normalZombiesList[line][0][0]:
-                normalZombiesList.remove(normalZombiesList[line][0])
-                print("contact")
+            if bullet[0] > normalZombiesList[line][0][0] + 35 and bullet[0] < normalZombiesList[line][0][0] + 45:
+                normalZombiesList[line][0][3] -=1
+                bullets.remove(bullet)
+            if normalZombiesList[line][0][3] == 0:
+                normalZombiesList[line].remove(normalZombiesList[line][0])
+            
 
 
 def game_output():
-    check_contact()
     draw_plants()
     sunflower_suns()
     draw_suns()
@@ -217,7 +218,7 @@ def create_normal_zombie(lineNum):
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
 
 def gamelevel_one():
-    if round(time, 2) == 10:
+    if round(time, 2) == 1:
         create_normal_zombie(random.randint(0, 4))
     if round(time, 2) == 15:
         create_normal_zombie(random.randint(0, 4))
