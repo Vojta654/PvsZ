@@ -100,7 +100,7 @@ def on_mouse_up(event):
         if plant_type == 3:
             peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
         if plant_type == 2:
-            sunflowers.append([count_x(x + 0.6), count_y(y + 0.2), 0])
+            sunflowers.append([count_x(x), count_y(y), 0])
         plant_type = 0
 
 def on_mouse_down(event):
@@ -137,11 +137,15 @@ def move_bullets():  # updatuje polohu střel
 def sunflower_suns():
     for sunflower in sunflowers:
         if sunflower[2] % 60 == 0:
-            window.blit(c.sunImage, (sunflower[0], sunflower[1]))
+            suns.append([sunflower[0] + random.randint(0, 68), sunflower[1] + 100])
+            print("sun draw")
         sunflower[2] +=1
 
 def draw_suns():
-    pass
+    for sun in suns:
+        window.blit(c.sunImage, (sun[0], sun[1]))
+
+
 
 def collect_sun():
  ...
@@ -149,6 +153,7 @@ def collect_sun():
 def game_output():
     draw_plants()
     sunflower_suns()
+    draw_suns()
     create_bullets()
     move_bullets()
     gamelevel_one()
