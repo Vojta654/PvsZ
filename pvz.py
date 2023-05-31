@@ -6,7 +6,7 @@ sunflowers = []
 suns = []
 pygame.init()
 clock = pygame.time.Clock()
-sunCoin = 0
+sunCoin = 100
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
 
@@ -49,6 +49,10 @@ def draw_board():
         else:
             color = c.GREY
         pygame.draw.rect(window, color, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
+    if plant_type == 4:
+        font = pygame.font.Font('HERMES 1943.ttf', 32)
+        text = font.render("Jsi chudej", True, c.RED)
+        window.blit(text, (count_x(8), 25))
 
     #menu - obrázky rostlin + box na počítání peněz
     window.blit(c.peashooterImage, (c.SQUARE_SIZE_X +10, 20))
@@ -88,21 +92,29 @@ plant_type = 0
 def on_key_down(event):
     global plant_type
     if event.key == pygame.K_q:#sunflower
-        plant_type = 2
+        if sunCoin >= 50:
+            plant_type = 2
+        elif sunCoin < 50:
+            plant_type = 4
     elif event.key == pygame.K_w: #peashooter
-        plant_type = 3
+        if sunCoin >= 100:
+            plant_type = 3
+        elif sunCoin < 100:
+            plant_type = 4
      
      
      
 def on_mouse_up(event):
-    global current, plant_type
+    global current, plant_type, sunCoin
     x,y = current
     if y > 0 and board[y-1][x] == 0:
         board[y-1][x] = plant_type
         if plant_type == 3:
             peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
+            sunCoin -= 100
         if plant_type == 2:
             sunflowers.append([count_x(x), count_y(y), 0])
+            sunCoin -= 50
         plant_type = 0
 
 def on_mouse_down(event):
@@ -141,7 +153,6 @@ def sunflower_suns():
     for sunflower in sunflowers:
         if sunflower[2] % 60 == 0:
             suns.append([sunflower[0] + random.randint(0, 68), sunflower[1] + 100])
-            print("sun draw")
         sunflower[2] +=1
 
 def draw_suns():
