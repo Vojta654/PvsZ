@@ -148,12 +148,18 @@ def draw_suns():
     for sun in suns:
         window.blit(c.sunImage, (sun[0], sun[1]))
 
+def check_contact():
+    for bullet in bullets:
+        line = int(bullet[1] // c.SQUARE_SIZE_X) -1
+        print(line)
+        if len(normalZombiesList[line]) >0:
+            if bullet[0] == normalZombiesList[line][0][0]:
+                normalZombiesList.remove(normalZombiesList[line][0])
+                print("contact")
 
-
-def collect_sun():
- ...
 
 def game_output():
+    check_contact()
     draw_plants()
     sunflower_suns()
     draw_suns()
