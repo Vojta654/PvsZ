@@ -1,7 +1,9 @@
 import pygame,sys, os, random
 import Constants as c
 bullets = []
-plants = []
+peashooters = []
+sunflowers = []
+suns = []
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -96,7 +98,9 @@ def on_mouse_up(event):
     if y > 0 and board[y-1][x] == 0:
         board[y-1][x] = plant_type
         if plant_type == 3:
-            plants.append([count_x(x + 0.6), count_y(y + 0.2), 0])
+            peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
+        if plant_type == 2:
+            sunflowers.append([count_x(x + 0.6), count_y(y + 0.2), 0])
         plant_type = 0
 
    
@@ -107,7 +111,7 @@ def game_update():
 
 
 def create_bullets():
-    for plant_bullet in plants:
+    for plant_bullet in peashooters:
         if plant_bullet[2] % 135 == 0:
             bullets.append([plant_bullet[0], plant_bullet[1]])
         plant_bullet[2] += 1
@@ -123,10 +127,18 @@ def move_bullets():  # updatuje polohu střel
             bullets.remove(bullet)
         
             
+def sunflower_suns():
+    for sunflower in sunflowers:
+        if sunflower[2] % 60 == 0:
+            window.blit(c.sunImage, (sunflower[0], sunflower[1]))
+        sunflower[2] +=1
 
+def draw_suns():
+    pass
 
 def game_output():
     draw_plants()
+    sunflower_suns()
     create_bullets()
     move_bullets()
     gamelevel_one()

@@ -31,7 +31,7 @@ zombieKyblImage = pygame.image.load("data/zombieKybl.png")
 #flower image load
 peashooterImage = pygame.image.load("data/peashooter.png")
 sunflowerImage = pygame.image.load("data/sunflower.png")
-
+sunImage = pygame.image.load("data/sun.png")
 #NormalZombie
 NormalZombieHP = 4
 ZOMBIE_SPEED = 1 # o kolik se posunou za jedent tik
