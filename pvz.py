@@ -6,7 +6,7 @@ sunflowers = []
 suns = []
 pygame.init()
 clock = pygame.time.Clock()
-
+sunCoin = 0
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
 
@@ -55,7 +55,7 @@ def draw_board():
     window.blit(c.sunflowerImage, (0, 10))
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
-    text = font.render('Sluníčka', True, c.BLACK)
+    text = font.render(str(sunCoin), True, c.BLACK)
     window.blit(text, (count_x(8), 25))
 
 
@@ -103,7 +103,14 @@ def on_mouse_up(event):
             sunflowers.append([count_x(x + 0.6), count_y(y + 0.2), 0])
         plant_type = 0
 
-   
+def on_mouse_down(event):
+    global sunCoin, current
+    x,y = current
+    for sun in suns:
+        if x == sun[0] //c.SQUARE_SIZE_X and y == sun[1]/c.SQUARE_SIZE_Y:
+            sunCoin += 25
+
+
 def game_update():
     draw_board()
 
@@ -135,6 +142,9 @@ def sunflower_suns():
 
 def draw_suns():
     pass
+
+def collect_sun():
+ ...
 
 def game_output():
     draw_plants()
