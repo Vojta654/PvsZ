@@ -70,10 +70,12 @@ def game_input():
             on_mouse_motion(event)
         elif event.type == pygame.MOUSEBUTTONUP:
             on_mouse_up(event)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            on_mouse_down(event)
 
 
+current = 0, 0
 
-current = 0
 def on_mouse_motion(event):
     global current
     mx, my = event.pos
@@ -107,9 +109,10 @@ def on_mouse_down(event):
     global sunCoin, current
     x,y = current
     for sun in suns:
-        if x == sun[0] //c.SQUARE_SIZE_X and y == sun[1]/c.SQUARE_SIZE_Y:
+        print(sun)
+        if x == sun[0] // c.SQUARE_SIZE_X and y == sun[1]// c.SQUARE_SIZE_Y:
             sunCoin += 25
-
+            suns.remove(sun)
 
 def game_update():
     draw_board()
