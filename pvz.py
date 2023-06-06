@@ -215,7 +215,7 @@ def updateNormalZombie():
 
 
 def create_normal_zombie(lineNum):
-    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
+    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP, 0])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
 
 def gamelevel_one():
     if round(time, 2) == 1:
@@ -235,5 +235,5 @@ while True:
     clock.tick(30)
 
 # 1. Z indexu cisel => na indexy slovne, takze misto plant[0] => plant.x
-# 2. Funkce na vykreslovani, bez nutnost 20* to vypisovat do kodu
-# rozdeleni Plantu od peanatu a prosim citelnost !!
+
+#bude se v updateNormalZombie(): dívat jaký je move a podle toho se bude buď pohybovat s animací 1 nebo bude stát a dělat animaci 2
