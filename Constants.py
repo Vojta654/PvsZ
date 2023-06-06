@@ -40,3 +40,8 @@ for i in range(22):
     img = pygame.image.load(os.path.join("data/NormalZombie", "Zombie_" + str(i) + ".png"))
     NormalZombieImages.append(img)
 ZOMBIE_START_LOCATION = BOARD_SIZE_X * SQUARE_SIZE_X
+
+NormalZombieAttackImages = []
+for i in range(21):
+    img = pygame.image.load(os.path.join("data/NormalZombie/attack", "ZombieAttack_" + str(i) + ".png"))
+    NormalZombieAttackImages.append(img)
