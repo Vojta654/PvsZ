@@ -24,6 +24,7 @@ bullets = []  # (x,y)
 PEASHOOTER_SPEED = 8
 PEASHOOTERHP =  3* 30
 SUNFLOWERHP = 2*30
+MOWER_SPEED = 5
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
@@ -35,7 +36,7 @@ sunImage = pygame.image.load("data/sun.png")
 mower_manImage = pygame.image.load("data/mower_men.png")
 #NormalZombie
 NormalZombieHP = 3
-ZOMBIE_SPEED = 0.8 # o kolik se posunou za jedent tik
+ZOMBIE_SPEED = 20 # o kolik se posunou za jedent tik
 NormalZombieImages = []
 for i in range(22):
     img = pygame.image.load(os.path.join("data/NormalZombie", "Zombie_" + str(i) + ".png"))

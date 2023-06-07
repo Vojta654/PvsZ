@@ -107,8 +107,9 @@ def on_key_down(event):
             plant_type = 3
         elif sunCoin < 100:
             plant_type = 0
-    elif event.key == pygame.K_a:
-        plant_type = 1
+
+
+
      
 plants = [[], [],[],[],[]]
 def on_mouse_up(event):
@@ -139,7 +140,7 @@ def game_update():
     check_contact()
     platns_zombie_contact()
     plants_hp()
-
+    mower_move()
 
 
 
@@ -148,12 +149,6 @@ def create_bullets():
         if plant_bullet[2] % 135 == 0:
             bullets.append([plant_bullet[0], plant_bullet[1]])
         plant_bullet[2] += 1
-def move_mowers():
-    global plant_type
-
-
-
-
 
     
 def move_bullets():  # updatuje polohu střel
@@ -186,11 +181,10 @@ def check_contact():
             if normalZombiesList[line][0][3] == 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
             
-def mower_move(y):
-    global plant_type
-
-
-    plant_type = 0
+def mower_move():
+    for mower in mowerList:
+        if mower[2] == 1:
+            mower[0] += c.MOWER_SPEED
 
 def game_output():
     draw_plants()
@@ -207,7 +201,7 @@ def game_output():
 normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
 mowerList = []
 for i in range(1, 6):
-    mowerList.append([c.SQUARE_SIZE_X, count_y(i), 0])
+    mowerList.append([0, count_y(i), 0])
 #podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
 def draw_plants():
     for ind in range(c.BOARD_SIZE_Y):
@@ -219,8 +213,8 @@ def draw_plants():
             elif square ==3:
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
             elif square == 1:
-                window.blit(c.mower_manImage, (5, count_y(ind+1)+10))
-                print(mowerList)
+                window.blit(c.mower_manImage, (mowerList[ind][0], count_y(ind+1)+10))
+
 
 
 
@@ -228,6 +222,8 @@ def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
         for zombik in range(len(normalZombiesList[line])):
             zombie_x = normalZombiesList[line][zombik][0]
+            if zombie_x < c.SQUARE_SIZE_Y:
+                mowerList[line][2] = 1
             if normalZombiesList[line][zombik][4] == 0:
                 zombie_y = normalZombiesList[line][zombik][1]
                 currentZombieImage = normalZombiesList[line][zombik][2]
