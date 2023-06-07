@@ -22,8 +22,8 @@ BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 30
 bullets = []  # (x,y)
 PEASHOOTER_SPEED = 8
-
-
+PEASHOOTERHP =  3* 30
+SUNFLOWERHP = 2*30
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
