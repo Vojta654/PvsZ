@@ -186,6 +186,7 @@ def mower_move():
         if mower[2] == 1:
             mower[0] += c.MOWER_SPEED
 
+
 def game_output():
     draw_plants()
     sunflower_suns()
