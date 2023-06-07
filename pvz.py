@@ -103,7 +103,7 @@ def on_key_down(event):
             plant_type = 0
      
      
-     
+plants = [[], [],[],[],[]]
 def on_mouse_up(event):
     global current, plant_type, sunCoin
     x,y = current
@@ -111,9 +111,11 @@ def on_mouse_up(event):
         board[y-1][x] = plant_type
         if plant_type == 3:
             peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
+            plants[y-1].append([x, y, c.PEASHOOTERHP, 0])# x,y, HP, mode
             sunCoin -= 100
         if plant_type == 2:
             sunflowers.append([count_x(x), count_y(y), 0])
+            plants[y-1].append([x, y, c.SUNFLOWERHP, 0])
             sunCoin -= 50
         plant_type = 0
 
@@ -128,6 +130,8 @@ def on_mouse_down(event):
 def game_update():
     draw_board()
     check_contact()
+    platns_zombie_contact()
+    plants_hp()
 
 
 
@@ -201,18 +205,27 @@ def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
         for zombik in range(len(normalZombiesList[line])):
             zombie_x = normalZombiesList[line][zombik][0]
-            zombie_y = normalZombiesList[line][zombik][1]
-            currentZombieImage = normalZombiesList[line][zombik][2]
-            currentZombieImage += 1 #další snímek v animaci
-            zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-            if currentZombieImage == len(c.NormalZombieImages):
-                currentZombieImage = 0
-            #uložení změněných hodnot
-            normalZombiesList[line][zombik][0] = zombie_x
-            normalZombiesList[line][zombik][2] = currentZombieImage
-            #zobrazení
-            window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
-
+            if normalZombiesList[line][zombik][4] == 0:
+                zombie_y = normalZombiesList[line][zombik][1]
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1 #další snímek v animaci
+                zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
+                if currentZombieImage == len(c.NormalZombieImages):
+                    currentZombieImage = 0
+                #uložení změněných hodnot
+                normalZombiesList[line][zombik][0] = zombie_x
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                #zobrazení
+                window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
+            if normalZombiesList[line][zombik][4] == 1:
+                zombie_x -= c.ZOMBIE_SPEED  # posunutí do leva
+                zombie_y = normalZombiesList[line][zombik][1]
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1  # další snímek v animaci
+                if currentZombieImage == len(c.NormalZombieAttackImages):
+                    currentZombieImage = 0
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                window.blit(c.NormalZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
 
 def create_normal_zombie(lineNum):
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP, 0])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
@@ -225,6 +238,30 @@ def gamelevel_one():
     if round(time, 2) == 15:
         create_normal_zombie(random.randint(0, 4))
 
+def platns_zombie_contact():
+    for ind in range(5):
+        zombieLine = normalZombiesList[ind]
+        for zombik in zombieLine:
+            zombie_x = zombik[0]
+            for plant in plants[ind]:
+                if zombie_x < count_x(plant[0]):
+                    zombik[4] = 1
+                    plant[3] = 1
+
+def plants_hp():
+    for index in range(len(plants)):
+        plantLine = plants[index]
+        for plant in plantLine:
+            pl_x = plant[0]
+            pl_y = plant[1]
+            if plant[3]==1:
+                plant[2] -= 1
+                print(plant[2])
+                if plant[2] == 0:
+                    plants[index].remove(plant)
+                    board[pl_y-1][pl_x] = 0
+                    normalZombiesList[index][0][4] =0
+                    print("já jsem tu kytku snědl")
 
 while True:
     game_input()
