@@ -4,6 +4,7 @@ bullets = []
 peashooters = []
 sunflowers = []
 suns = []
+mowers = []
 pygame.init()
 clock = pygame.time.Clock()
 sunCoin = 100
@@ -54,8 +55,13 @@ def draw_board():
         text = font.render("Jsi chudej", True, c.RED)
         window.blit(text, (count_x(8), 25))
 
+
+
+
+
     #menu - obrázky rostlin + box na počítání peněz
     window.blit(c.peashooterImage, (c.SQUARE_SIZE_X +10, 20))
+
     window.blit(c.sunflowerImage, (0, 10))
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
@@ -101,7 +107,8 @@ def on_key_down(event):
             plant_type = 3
         elif sunCoin < 100:
             plant_type = 0
-     
+    elif event.key == pygame.K_a:
+        plant_type = 1
      
 plants = [[], [],[],[],[]]
 def on_mouse_up(event):
@@ -141,7 +148,13 @@ def create_bullets():
         if plant_bullet[2] % 135 == 0:
             bullets.append([plant_bullet[0], plant_bullet[1]])
         plant_bullet[2] += 1
-    
+def move_mowers():
+    global plant_type
+
+
+
+
+
     
 def move_bullets():  # updatuje polohu střel
     for bullet in bullets:
@@ -173,7 +186,11 @@ def check_contact():
             if normalZombiesList[line][0][3] == 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
             
+def mower_move(y):
+    global plant_type
 
+
+    plant_type = 0
 
 def game_output():
     draw_plants()
@@ -188,7 +205,9 @@ def game_output():
 
 
 normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
-
+mowerList = []
+for i in range(1, 6):
+    mowerList.append([c.SQUARE_SIZE_X, count_y(i), 0])
 #podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
 def draw_plants():
     for ind in range(c.BOARD_SIZE_Y):
@@ -199,6 +218,10 @@ def draw_plants():
                 window.blit(c.sunflowerImage, (count_x(j), count_y(ind + 1)+10))#sunflower
             elif square ==3:
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
+            elif square == 1:
+                window.blit(c.mower_manImage, (5, count_y(ind+1)+10))
+                print(mowerList)
+
 
 
 def updateNormalZombie():
