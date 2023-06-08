@@ -29,7 +29,11 @@ for y in range(0, c.BOARD_SIZE_Y, 1):
 
 for i in range(c.BOARD_SIZE_Y):  # tam kde bude jedna se dají sekačky
     board[i][0] = 1
+normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
+mowerList = []
 
+for i in range(1, 6):
+    mowerList.append([0, count_y(i), 0])
 
 def draw_board():
     global plant_type
@@ -119,11 +123,11 @@ def on_mouse_up(event):
         board[y-1][x] = plant_type
         if plant_type == 3:
             peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
-            plants[y-1].append([x, y, c.PEASHOOTERHP, 0])# x,y, HP, mode
+            plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 100
         if plant_type == 2:
             sunflowers.append([count_x(x), count_y(y), 0])
-            plants[y-1].append([x, y, c.SUNFLOWERHP, 0])
+            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
         plant_type = 0
 
@@ -141,35 +145,40 @@ def game_update():
     platns_zombie_contact()
     plants_hp()
     mower_move()
+    update_plants()
 
-
-
-def create_bullets():
-    for plant_bullet in peashooters:
-        if plant_bullet[2] % 135 == 0:
-            bullets.append([plant_bullet[0], plant_bullet[1]])
-        plant_bullet[2] += 1
+def update_plants():
+    for index in range(len(plants)):
+        line_plant = plants[index]
+        for plant in line_plant:
+            if plant[4] == 2:
+                sunflower_suns(plant)
+            elif plant[4] == 3:
+                create_bullets(plant)
+def create_bullets(plant):
+        if plant[5] % 135 == 0:
+            bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
+        plant[5] += 1
 
     
 def move_bullets():  # updatuje polohu střel
     for bullet in bullets:
-        bullet_loc_x = bullet[0]
-        bullet_loc_x += c.PEASHOOTER_SPEED
-        bullet[0] = bullet_loc_x        
-        pygame.draw.rect(window, c.BULLET_COLOR, (bullet_loc_x, bullet[1], c.BULLET_SIZE, c.BULLET_SIZE))
+        bullet[0] += c.PEASHOOTER_SPEED
+        pygame.draw.rect(window, c.BULLET_COLOR, (bullet[0], bullet[1], c.BULLET_SIZE, c.BULLET_SIZE))
         if bullet[0] > 1200:
             bullets.remove(bullet)
         
             
-def sunflower_suns():
-    for sunflower in sunflowers:
-        if sunflower[2] % 60 == 0:
-            suns.append([sunflower[0] + random.randint(0, 68), sunflower[1] + 100])
-        sunflower[2] +=1
+def sunflower_suns(plant):
+    if plant[5] % 60 == 0:
+        suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
+
+    plant[5] +=1
 
 def draw_suns():
     for sun in suns:
         window.blit(c.sunImage, (sun[0], sun[1]))
+
 
 def check_contact():
     for bullet in bullets:
@@ -179,8 +188,13 @@ def check_contact():
                 normalZombiesList[line][0][3] -=1
                 bullets.remove(bullet)
             if normalZombiesList[line][0][3] == 0:
+                ix = (normalZombiesList[line][0][0]  + 50 ) // c.SQUARE_SIZE_X
+                for plant in plants[line]:
+                    if plant[0] == ix:
+                        plant[3] = 0
                 normalZombiesList[line].remove(normalZombiesList[line][0])
-            
+
+
 def mower_move():
     for mower in mowerList:
         if mower[2] == 1:
@@ -189,21 +203,16 @@ def mower_move():
 
 def game_output():
     draw_plants()
-    sunflower_suns()
     draw_suns()
-    create_bullets()
     move_bullets()
     gamelevel_one()
     updateNormalZombie()
+
     
 
 
 
-normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
-mowerList = []
-for i in range(1, 6):
-    mowerList.append([0, count_y(i), 0])
-#podívá se do board[][], kde jsou uložený pozice rostlin a tyto rostliny zobrazí
+
 def draw_plants():
     for ind in range(c.BOARD_SIZE_Y):
         line = board[ind]
@@ -218,6 +227,20 @@ def draw_plants():
 
 
 
+def plants_hp():
+    for index in range(len(plants)):
+        plantLine = plants[index]
+        for plant in plantLine:
+            pl_x = plant[0]
+            pl_y = plant[1]
+            if plant[3]==1:
+                plant[2] -= 1
+                if plant[2] == 0:
+                    plants[index].remove(plant)
+                    board[pl_y-1][pl_x] = 0
+
+                    if len(normalZombiesList[index]) >0:
+                        normalZombiesList[index][0][4] = 0
 
 def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
@@ -253,10 +276,7 @@ def create_normal_zombie(lineNum):
 def gamelevel_one():
     if round(time, 2) == 1:
         create_normal_zombie(random.randint(0, 4))
-    if round(time, 2) == 15:
-        create_normal_zombie(random.randint(0, 4))
-    if round(time, 2) == 15:
-        create_normal_zombie(random.randint(0, 4))
+
 
 def platns_zombie_contact():
     for ind in range(5):
@@ -268,20 +288,7 @@ def platns_zombie_contact():
                     zombik[4] = 1
                     plant[3] = 1
 
-def plants_hp():
-    for index in range(len(plants)):
-        plantLine = plants[index]
-        for plant in plantLine:
-            pl_x = plant[0]
-            pl_y = plant[1]
-            if plant[3]==1:
-                plant[2] -= 1
-                print(plant[2])
-                if plant[2] == 0:
-                    plants[index].remove(plant)
-                    board[pl_y-1][pl_x] = 0
-                    normalZombiesList[index][0][4] =0
-                    print("já jsem tu kytku snědl")
+
 
 while True:
     game_input()
