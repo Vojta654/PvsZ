@@ -1,8 +1,6 @@
 import pygame,sys, os, random
 import Constants as c
 bullets = []
-peashooters = []
-sunflowers = []
 suns = []
 mowers = []
 pygame.init()
@@ -14,6 +12,10 @@ def count_x(number_x):
 
 def count_y(number_y):
     return number_y * c.SQUARE_SIZE_Y
+
+
+def count_ticks(second):
+    return second * c.FPS
 
 
 window = pygame.display.set_mode((count_x(c.BOARD_SIZE_X), count_y(c.BOARD_SIZE_Y) + c.MENU_SIZE))
@@ -122,11 +124,9 @@ def on_mouse_up(event):
     if y > 0 and board[y-1][x] == 0:
         board[y-1][x] = plant_type
         if plant_type == 3:
-            peashooters.append([count_x(x + 0.6), count_y(y + 0.2), 0])
             plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 100
         if plant_type == 2:
-            sunflowers.append([count_x(x), count_y(y), 0])
             plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
         plant_type = 0
@@ -136,7 +136,7 @@ def on_mouse_down(event):
     x,y = current
     for sun in suns:
         if x == sun[0] // c.SQUARE_SIZE_X and y == sun[1]// c.SQUARE_SIZE_Y:
-            sunCoin += 250
+            sunCoin += 50
             suns.remove(sun)
 
 def game_update():
@@ -156,7 +156,7 @@ def update_plants():
             elif plant[4] == 3:
                 create_bullets(plant)
 def create_bullets(plant):
-        if plant[5] % 135 == 0:
+        if plant[5] % count_ticks(4) == 0:
             bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
         plant[5] += 1
 
@@ -170,7 +170,7 @@ def move_bullets():  # updatuje polohu střel
         
             
 def sunflower_suns(plant):
-    if plant[5] % 60 == 0:
+    if plant[5] % count_ticks(5) == 0:
         suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
 
     plant[5] +=1
@@ -184,7 +184,7 @@ def check_contact():
     for bullet in bullets:
         line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) >0:
-            if bullet[0] > normalZombiesList[line][0][0] + 35 and bullet[0] < normalZombiesList[line][0][0] + 45:
+            if bullet[0] > normalZombiesList[line][0][0] + 35:
                 normalZombiesList[line][0][3] -=1
                 bullets.remove(bullet)
             if normalZombiesList[line][0][3] == 0:
@@ -214,9 +214,6 @@ def game_output():
     move_bullets()
     gamelevel_one()
     updateNormalZombie()
-
-    
-
 
 
 
@@ -257,8 +254,10 @@ def updateNormalZombie():
                 mowerList[line][2] = 1
             if zombie_x < 20:
                 loose()
+
+            zombie_y = normalZombiesList[line][zombik][1]
             if normalZombiesList[line][zombik][4] == 0:
-                zombie_y = normalZombiesList[line][zombik][1]
+
                 currentZombieImage = normalZombiesList[line][zombik][2]
                 currentZombieImage += 1 #další snímek v animaci
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
@@ -270,8 +269,6 @@ def updateNormalZombie():
                 #zobrazení
                 window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
             if normalZombiesList[line][zombik][4] == 1:
-                zombie_x -= c.ZOMBIE_SPEED  # posunutí do leva
-                zombie_y = normalZombiesList[line][zombik][1]
                 currentZombieImage = normalZombiesList[line][zombik][2]
                 currentZombieImage += 1  # další snímek v animaci
                 if currentZombieImage == len(c.NormalZombieAttackImages):
@@ -307,9 +304,7 @@ while True:
     game_update()
     game_output()
     pygame.display.flip()
-    time += (1/30)
-    clock.tick(30)
+    time += (1/c.FPS)
+    clock.tick(c.FPS)
 
 # 1. Z indexu cisel => na indexy slovne, takze misto plant[0] => plant.x
-
-#bude se v updateNormalZombie(): dívat jaký je move a podle toho se bude buď pohybovat s animací 1 nebo bude stát a dělat animaci 2
