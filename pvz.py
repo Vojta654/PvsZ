@@ -196,9 +196,16 @@ def check_contact():
 
 
 def mower_move():
-    for mower in mowerList:
+    for index in range(len(mowerList)):
+        mower = mowerList[index]
         if mower[2] == 1:
             mower[0] += c.MOWER_SPEED
+
+            for zombik in normalZombiesList[index]:
+                if zombik[0] < mower[0] + 50:
+                    normalZombiesList[index].remove(zombik)
+
+
 
 
 def game_output():
@@ -246,8 +253,10 @@ def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
         for zombik in range(len(normalZombiesList[line])):
             zombie_x = normalZombiesList[line][zombik][0]
-            if zombie_x < c.SQUARE_SIZE_Y:
+            if zombie_x < c.SQUARE_SIZE_X - 70:
                 mowerList[line][2] = 1
+            if zombie_x < 20:
+                loose()
             if normalZombiesList[line][zombik][4] == 0:
                 zombie_y = normalZombiesList[line][zombik][1]
                 currentZombieImage = normalZombiesList[line][zombik][2]
@@ -288,6 +297,9 @@ def platns_zombie_contact():
                     zombik[4] = 1
                     plant[3] = 1
 
+
+def loose():
+    pass
 
 
 while True:

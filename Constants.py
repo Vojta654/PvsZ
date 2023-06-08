@@ -36,7 +36,7 @@ sunImage = pygame.image.load("data/sun.png")
 mower_manImage = pygame.image.load("data/mower_men.png")
 #NormalZombie
 NormalZombieHP = 3
-ZOMBIE_SPEED = 2 # o kolik se posunou za jedent tik
+ZOMBIE_SPEED = 1 # o kolik se posunou za jedent tik
 NormalZombieImages = []
 for i in range(22):
     img = pygame.image.load(os.path.join("data/NormalZombie", "Zombie_" + str(i) + ".png"))
