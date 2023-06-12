@@ -69,6 +69,7 @@ def draw_board():
     window.blit(c.peashooterImage, (c.SQUARE_SIZE_X +10, 20))
 
     window.blit(c.sunflowerImage, (0, 10))
+    window.blit(c.boomerangImage, (count_x(2)-2, 0))
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
     text = font.render(str(sunCoin), True, c.BLACK)
@@ -113,6 +114,11 @@ def on_key_down(event):
             plant_type = 3
         elif sunCoin < 100:
             plant_type = 0
+    elif event.key == pygame.K_e: #sunflower
+        if sunCoin >= 150:
+            plant_type = 4
+        elif sunCoin < 150:
+            plant_type = 0
 
 
 
@@ -129,6 +135,9 @@ def on_mouse_up(event):
         if plant_type == 2:
             plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
+        if plant_type == 4:
+            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
+            sunCoin -= 150
         plant_type = 0
 
 def on_mouse_down(event):
@@ -146,6 +155,7 @@ def game_update():
     plants_hp()
     mower_move()
     update_plants()
+    update_boomerang()
 
 def update_plants():
     for index in range(len(plants)):
@@ -155,6 +165,8 @@ def update_plants():
                 sunflower_suns(plant)
             elif plant[4] == 3:
                 create_bullets(plant)
+            elif plant[4] == 4:
+                create_boomerang(plant)
 def create_bullets(plant):
         if plant[5] % count_ticks(4) == 0:
             bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
@@ -179,7 +191,29 @@ def draw_suns():
     for sun in suns:
         window.blit(c.sunImage, (sun[0], sun[1]))
 
-
+boomerangs = []
+def create_boomerang(plant):
+    if plant[5] == 0:
+        boomerangs.append([count_x(plant[0]) + 30,count_x(plant[0]) + 30, count_y(plant[1]) + 50, 0]) # start position, x, y, mode(front/ back), 
+        plant[5] = 1
+        
+def update_boomerang():
+    for boomerang in boomerangs:
+        if boomerang[3] == 0:
+            if boomerang[1] < boomerang[0] +c.BOOMERANG_RANGE or boomerang[0] > boomerang[1]:
+                boomerang[1]+= c.BOOMERANG_SPEED
+            else:
+                boomerang[3]=1
+        if boomerang[3] == 1:
+            boomerang[1] -= c.BOOMERANG_SPEED
+            if boomerang[0] > boomerang[1]:
+                boomerang[3] = 0
+            
+        
+def draw_boomerang():
+    for boomerang in boomerangs:
+        pygame.draw.rect(window, c.YELLOW, (boomerang[1], boomerang[2], c.BOOMERANG_X, c.BOOMERANG_Y))
+        
 def check_contact():
     for bullet in bullets:
         line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
@@ -187,13 +221,22 @@ def check_contact():
             if bullet[0] > normalZombiesList[line][0][0] + 35:
                 normalZombiesList[line][0][3] -=1
                 bullets.remove(bullet)
+                
             if normalZombiesList[line][0][3] == 0:
                 ix = (normalZombiesList[line][0][0]  + 50 ) // c.SQUARE_SIZE_X
                 for plant in plants[line]:
                     if plant[0] == ix:
                         plant[3] = 0
                 normalZombiesList[line].remove(normalZombiesList[line][0])
-
+    for boomerang in boomerangs:
+        line = int(boomerang[2] // c.SQUARE_SIZE_Y) -1
+        if len(normalZombiesList[line]) > 0:
+            for zombik in normalZombiesList[line]:
+                
+                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+60:
+                    zombik[3] -=1
+                if normalZombiesList[line][0][3] == 0:
+                    normalZombiesList[line].remove(zombik)
 
 def mower_move():
     for index in range(len(mowerList)):
@@ -214,7 +257,7 @@ def game_output():
     move_bullets()
     gamelevel_one()
     updateNormalZombie()
-
+    draw_boomerang()
 
 
 def draw_plants():
@@ -226,6 +269,8 @@ def draw_plants():
                 window.blit(c.sunflowerImage, (count_x(j), count_y(ind + 1)+10))#sunflower
             elif square ==3:
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
+            elif square ==4:
+                window.blit(c.boomerangImage, (count_x(j) -2, count_y(ind + 1)))#boomerang
             elif square == 1:
                 window.blit(c.mower_manImage, (mowerList[ind][0], count_y(ind+1)+10))
 

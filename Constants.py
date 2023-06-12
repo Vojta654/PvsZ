@@ -17,6 +17,7 @@ WHITE = (255,255,255)
 GREEM = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+YELLOW = (255,255,0)
 #bullets setting
 BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 30
@@ -25,6 +26,11 @@ PEASHOOTER_SPEED = 8
 PEASHOOTERHP =  2* 30
 SUNFLOWERHP = 2*30
 MOWER_SPEED = 5
+#boomerang settings
+BOOMERANG_X = 30
+BOOMERANG_Y = 5
+BOOMERANG_SPEED = 10
+BOOMERANG_RANGE = 650
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
@@ -32,6 +38,7 @@ zombieKyblImage = pygame.image.load("data/zombieKybl.png")
 #flower image load
 peashooterImage = pygame.image.load("data/peashooter.png")
 sunflowerImage = pygame.image.load("data/sunflower.png")
+boomerangImage = pygame.image.load("data/boomerang.png")
 sunImage = pygame.image.load("data/sun.png")
 mower_manImage = pygame.image.load("data/mower_men.png")
 #NormalZombie
