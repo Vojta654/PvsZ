@@ -95,7 +95,7 @@ def on_key_down(event):
         if sunCoin >= 50:
             plant_type = 2
         elif sunCoin < 50:
-            plant_type = 2
+            plant_type = 0
     elif event.key == pygame.K_w: #peashooter
         if sunCoin >= 100:
             plant_type = 3
@@ -218,7 +218,7 @@ def create_normal_zombie(lineNum):
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy]
 
 def gamelevel_one():
-    if round(time, 2) == 1:
+    if round(time, 2) == 10:
         create_normal_zombie(random.randint(0, 4))
     if round(time, 2) == 15:
         create_normal_zombie(random.randint(0, 4))
