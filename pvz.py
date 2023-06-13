@@ -208,6 +208,8 @@ def update_boomerang():
             boomerang[1] -= c.BOOMERANG_SPEED
             if boomerang[0] > boomerang[1]:
                 boomerang[3] = 0
+        if boomerang[3] == -1:
+            boomerangs.remove(boomerang)
             
         
 def draw_boomerang():
@@ -233,7 +235,7 @@ def check_contact():
         if len(normalZombiesList[line]) > 0:
             for zombik in normalZombiesList[line]:
                 
-                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+60:
+                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+61:
                     zombik[3] -=1
                 if normalZombiesList[line][0][3] == 0:
                     normalZombiesList[line].remove(zombik)
@@ -270,7 +272,7 @@ def draw_plants():
             elif square ==3:
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
             elif square ==4:
-                window.blit(c.boomerangImage, (count_x(j) -2, count_y(ind + 1)))#boomerang
+                window.blit(c.boomerangImage, (count_x(j) -2, count_y(ind + 1)))#boomerang - plant
             elif square == 1:
                 window.blit(c.mower_manImage, (mowerList[ind][0], count_y(ind+1)+10))
 
@@ -287,6 +289,12 @@ def plants_hp():
                 if plant[2] == 0:
                     plants[index].remove(plant)
                     board[pl_y-1][pl_x] = 0
+                    if plant[4] == 4:
+                        for boomerang in boomerangs:
+                            if plant[0] ==( boomerang[1] -30) // c.SQUARE_SIZE_X:
+                                boomerangs.remove(boomerang)
+
+
 
                     if len(normalZombiesList[index]) >0:
                         normalZombiesList[index][0][4] = 0
@@ -325,8 +333,9 @@ def create_normal_zombie(lineNum):
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP, 0])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
 
 def gamelevel_one():
-    if round(time, 2) == 10:
+    if round(time, 2) % 1 == 0:
         create_normal_zombie(random.randint(0, 4))
+
 
 
 def platns_zombie_contact():
