@@ -136,7 +136,7 @@ def on_mouse_up(event):
             plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
         if plant_type == 4:
-            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
+            plants[y-1].append([x, y, c.BOOMERANG_HP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
             sunCoin -= 150
         plant_type = 0
 
@@ -217,25 +217,21 @@ def draw_boomerang():
         pygame.draw.rect(window, c.YELLOW, (boomerang[1], boomerang[2], c.BOOMERANG_X, c.BOOMERANG_Y))
         
 def check_contact():
-    for bullet in bullets:
+    for bullet in bullets: #peashoter bullet contact check
         line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) >0:
-            if bullet[0] > normalZombiesList[line][0][0] + 35:
+            if bullet[0] > normalZombiesList[line][0][0] + 25 and bullet[0] > normalZombiesList[line][0][0] + 26 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED: # if hit: -1HP, bullet remove
                 normalZombiesList[line][0][3] -=1
                 bullets.remove(bullet)
                 
             if normalZombiesList[line][0][3] == 0:
-                ix = (normalZombiesList[line][0][0]  + 50 ) // c.SQUARE_SIZE_X
-                for plant in plants[line]:
-                    if plant[0] == ix:
-                        plant[3] = 0
                 normalZombiesList[line].remove(normalZombiesList[line][0])
-    for boomerang in boomerangs:
+    for boomerang in boomerangs: # boomerang contact check
         line = int(boomerang[2] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) > 0:
             for zombik in normalZombiesList[line]:
                 
-                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+61:
+                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+ 51 + c.ZOMBIE_SPEED*c.BOOMERANG_SPEED:
                     zombik[3] -=1
                 if normalZombiesList[line][0][3] == 0:
                     normalZombiesList[line].remove(zombik)
@@ -333,7 +329,7 @@ def create_normal_zombie(lineNum):
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP, 0])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
 
 def gamelevel_one():
-    if round(time, 2) % 1 == 0:
+    if round(time, 2) % 2 == 0:
         create_normal_zombie(random.randint(0, 4))
 
 
@@ -345,9 +341,11 @@ def platns_zombie_contact():
             zombie_x = zombik[0]
             for plant in plants[ind]:
                 if zombie_x < count_x(plant[0]):
-                    zombik[4] = 1
-                    plant[3] = 1
-
+                    zombik[4] = 1 #set zombik animation to eat plant
+                    plant[3] = 1 # set plant to remove
+                    
+                else:
+                    plant[3] = 0 # u kytky neni zombik, takže se HP neodebírají
 
 def loose():
     pass

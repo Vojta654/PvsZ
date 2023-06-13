@@ -23,14 +23,15 @@ BULLET_COLOR = (150, 30, 30)
 BULLET_SIZE = 30
 bullets = []  # (x,y)
 PEASHOOTER_SPEED = 8
-PEASHOOTERHP =  2* 30
-SUNFLOWERHP = 2*30
+PEASHOOTERHP =  3* FPS
+SUNFLOWERHP = 2*FPS
 MOWER_SPEED = 5
 #boomerang settings
 BOOMERANG_X = 30
-BOOMERANG_Y = 5
+BOOMERANG_Y = 4
 BOOMERANG_SPEED = 10
 BOOMERANG_RANGE = 650
+BOOMERANG_HP = 4* FPS
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
