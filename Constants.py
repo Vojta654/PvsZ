@@ -44,6 +44,8 @@ sunImage = pygame.image.load("data/sun.png")
 mower_manImage = pygame.image.load("data/mower_men.png")
 #NormalZombie
 NormalZombieHP = 3
+CONEHEADZOMBIE_HP = 5
+BUCKETHEADZOMBIE_HP = 7
 ZOMBIE_SPEED = 1 # o kolik se posunou za jedent tik
 NormalZombieImages = []
 for i in range(22):
@@ -55,3 +57,28 @@ NormalZombieAttackImages = []
 for i in range(21):
     img = pygame.image.load(os.path.join("data/NormalZombie/attack", "ZombieAttack_" + str(i) + ".png"))
     NormalZombieAttackImages.append(img)
+
+ConeheadZombieImages = []
+for i in range(21):
+    img = pygame.image.load(os.path.join("data/ConeheadZombie/ConeheadZombie", "ConeheadZombie_" + str(i) + ".png"))
+    ConeheadZombieImages.append(img)
+
+
+ConeheadZombieAttackImages = []
+for i in range(11):
+    img = pygame.image.load(os.path.join("data/ConeheadZombie/ConeheadZombieAttack", "ConeheadZombieAttack_" + str(i) + ".png"))
+    ConeheadZombieAttackImages.append(img)
+
+
+BucketheadZombieImages = []
+for i in range(15):
+    img = pygame.image.load(os.path.join("data/BucketheadZombie/BucketheadZombie", "BucketheadZombie_" + str(i) + ".png"))
+    BucketheadZombieImages.append(img)
+
+
+BucketheadZombieAttackImages = []
+for i in range(11):
+    img = pygame.image.load(os.path.join("data/BucketheadZombie/BucketheadZombieAttack", "BucketheadZombieAttack_" + str(i) + ".png"))
+    BucketheadZombieAttackImages.append(img)
+
+print("loaded")

@@ -157,7 +157,8 @@ def mode_reset():
         for plant in plants[line]:
             plant[3] = 0
         for zombik in normalZombiesList[line]:
-            zombik[4] = 0
+            if zombik[4] >= 10:
+                zombik[4] -= 10
 
 def update_plants():
     for index in range(len(plants)):
@@ -313,6 +314,7 @@ def updateNormalZombie():
             if zombie_x < -80:
                 loose()
             zombie_y = normalZombiesList[line][zombik][1]
+            # normal zombie
             if normalZombiesList[line][zombik][4] == 0: # animace walk
 
                 currentZombieImage = normalZombiesList[line][zombik][2]
@@ -325,20 +327,75 @@ def updateNormalZombie():
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 #zobrazení
                 window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
-            if normalZombiesList[line][zombik][4] == 1: # animace attack
+            if normalZombiesList[line][zombik][4] == 10: # animace attack
                 currentZombieImage = normalZombiesList[line][zombik][2]
                 currentZombieImage += 1  # další snímek v animaci
                 if currentZombieImage >= len(c.NormalZombieAttackImages):
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 window.blit(c.NormalZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+                
+            # cone head zombie
+            if normalZombiesList[line][zombik][4] == 1: # animace walk
 
-def create_normal_zombie(lineNum):
-    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, c.NormalZombieHP, 0])#udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1 #další snímek v animaci
+                zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
+                if currentZombieImage >= len(c.ConeheadZombieImages):
+                    currentZombieImage = 0
+                #uložení změněných hodnot
+                normalZombiesList[line][zombik][0] = zombie_x
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                #zobrazení
+                window.blit(c.ConeheadZombieImages[currentZombieImage], (zombie_x, zombie_y))
+            
+            if normalZombiesList[line][zombik][4] == 11: # animace attack
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1  # další snímek v animaci
+                if currentZombieImage >= len(c.ConeheadZombieAttackImages):
+                    currentZombieImage = 0
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                window.blit(c.ConeheadZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+                
+                
+            #buckethead zombie
+            if normalZombiesList[line][zombik][4] == 2: # animace walk
+
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1 #další snímek v animaci
+                zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
+                if currentZombieImage >= len(c.BucketheadZombieImages):
+                    currentZombieImage = 0
+                #uložení změněných hodnot
+                normalZombiesList[line][zombik][0] = zombie_x
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                #zobrazení
+                window.blit(c.BucketheadZombieImages[currentZombieImage], (zombie_x, zombie_y))
+                
+            if normalZombiesList[line][zombik][4] == 12: # animace attack
+                currentZombieImage = normalZombiesList[line][zombik][2]
+                currentZombieImage += 1  # další snímek v animaci
+                if currentZombieImage >= len(c.BucketheadZombieAttackImages):
+                    currentZombieImage = 0
+                normalZombiesList[line][zombik][2] = currentZombieImage
+                window.blit(c.BucketheadZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+
+def create_normal_zombie(lineNum, type):
+    hp = 0
+    if type == 0:
+        hp = c.NormalZombieHP
+    elif type == 1:
+        hp = c.CONEHEADZOMBIE_HP
+    elif type == 2:
+        hp = c.BUCKETHEADZOMBIE_HP
+        
+    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, hp, type])
+    print(type)
+    #udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku +typ 0, 1, 2 jde; 10, 11, 12 žere
 
 def gamelevel_one():
     if round(time, 2) % 2 == 0:
-        create_normal_zombie(random.randint(0, 4))
+        create_normal_zombie(random.randint(0, 4), random.randint(0, 2))
 
 
 
@@ -349,12 +406,10 @@ def platns_zombie_contact():
             for zombik in zombieLine:
                 zombie_x = zombik[0]
                 if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
-                    zombik[4] = 1 #set zombik animation to eat plant
+                    zombik[4] += 10 #set zombik animation to eat plant
                     plant[3] = 1 # set plant to remove
 
                     
-
-                print(plant[3])
 def loose():
     window.fill(c.BLACK)
     font = pygame.font.Font('HERMES 1943.ttf', 170)
