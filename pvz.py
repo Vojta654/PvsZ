@@ -56,10 +56,6 @@ def draw_board():
         else:
             color = c.GREY
         pygame.draw.rect(window, color, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
-    if plant_type == 4:
-        font = pygame.font.Font('HERMES 1943.ttf', 32)
-        text = font.render("Jsi chudej", True, c.RED)
-        window.blit(text, (count_x(8), 25))
 
 
 
@@ -104,21 +100,19 @@ def on_mouse_motion(event):
 plant_type = 0
 def on_key_down(event):
     global plant_type
+    plant_type = 0
     if event.key == pygame.K_q:#sunflower
         if sunCoin >= 50:
             plant_type = 2
-        elif sunCoin < 50:
-            plant_type = 0
+
     elif event.key == pygame.K_w: #peashooter
         if sunCoin >= 100:
             plant_type = 3
-        elif sunCoin < 100:
-            plant_type = 0
+
     elif event.key == pygame.K_e: #sunflower
         if sunCoin >= 150:
             plant_type = 4
-        elif sunCoin < 150:
-            plant_type = 0
+
 
 
 
@@ -149,13 +143,21 @@ def on_mouse_down(event):
             suns.remove(sun)
 
 def game_update():
-    draw_board()
-    check_contact()
+    mode_reset()
     platns_zombie_contact()
+    check_contact()
+
     plants_hp()
     mower_move()
     update_plants()
     update_boomerang()
+
+def mode_reset():
+    for line in range(5):
+        for plant in plants[line]:
+            plant[3] = 0
+        for zombik in normalZombiesList[line]:
+            zombik[4] = 0
 
 def update_plants():
     for index in range(len(plants)):
@@ -237,24 +239,32 @@ def check_contact():
                     normalZombiesList[line].remove(zombik)
 
 def mower_move():
-    for index in range(len(mowerList)):
-        mower = mowerList[index]
+    for mower in mowerList:
         if mower[2] == 1:
             mower[0] += c.MOWER_SPEED
+            index = mower[1]// c.SQUARE_SIZE_Y -1
+
 
             for zombik in normalZombiesList[index]:
-                if zombik[0] < mower[0] + 50:
+                if zombik[0] > mower[0] + 20 and zombik[0] < mower[0] + 70:
                     normalZombiesList[index].remove(zombik)
+            if mower[0] > count_x(11):
+                mowerList.remove(mower)
 
+def draw_mower():
+    for mower in mowerList:
+        window.blit(c.mower_manImage, (mower[0], mower[1] + 10))
 
 
 
 def game_output():
+    draw_board()
     draw_plants()
     draw_suns()
     move_bullets()
     gamelevel_one()
     updateNormalZombie()
+    draw_mower()
     draw_boomerang()
 
 
@@ -269,8 +279,7 @@ def draw_plants():
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
             elif square ==4:
                 window.blit(c.boomerangImage, (count_x(j) -2, count_y(ind + 1)))#boomerang - plant
-            elif square == 1:
-                window.blit(c.mower_manImage, (mowerList[ind][0], count_y(ind+1)+10))
+
 
 
 
@@ -282,18 +291,19 @@ def plants_hp():
             pl_y = plant[1]
             if plant[3]==1:
                 plant[2] -= 1
+                print(plant[2])
                 if plant[2] == 0:
+
                     plants[index].remove(plant)
                     board[pl_y-1][pl_x] = 0
                     if plant[4] == 4:
-                        for boomerang in boomerangs:
+                        for boomerang in boomerangs: #odebere boomerang když umře kytka
                             if plant[0] ==( boomerang[1] -30) // c.SQUARE_SIZE_X:
                                 boomerangs.remove(boomerang)
 
 
 
-                    if len(normalZombiesList[index]) >0:
-                        normalZombiesList[index][0][4] = 0
+
 
 def updateNormalZombie():
     for line in range(len(normalZombiesList)): #pro každý řádek
@@ -301,26 +311,25 @@ def updateNormalZombie():
             zombie_x = normalZombiesList[line][zombik][0]
             if zombie_x < c.SQUARE_SIZE_X - 70:
                 mowerList[line][2] = 1
-            if zombie_x < 20:
+            if zombie_x < -80:
                 loose()
-
             zombie_y = normalZombiesList[line][zombik][1]
-            if normalZombiesList[line][zombik][4] == 0:
+            if normalZombiesList[line][zombik][4] == 0: # animace walk
 
                 currentZombieImage = normalZombiesList[line][zombik][2]
                 currentZombieImage += 1 #další snímek v animaci
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-                if currentZombieImage == len(c.NormalZombieImages):
+                if currentZombieImage >= len(c.NormalZombieImages):
                     currentZombieImage = 0
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 #zobrazení
                 window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
-            if normalZombiesList[line][zombik][4] == 1:
+            if normalZombiesList[line][zombik][4] == 1: # animace attack
                 currentZombieImage = normalZombiesList[line][zombik][2]
                 currentZombieImage += 1  # další snímek v animaci
-                if currentZombieImage == len(c.NormalZombieAttackImages):
+                if currentZombieImage >= len(c.NormalZombieAttackImages):
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 window.blit(c.NormalZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
@@ -337,18 +346,30 @@ def gamelevel_one():
 def platns_zombie_contact():
     for ind in range(5):
         zombieLine = normalZombiesList[ind]
-        for zombik in zombieLine:
-            zombie_x = zombik[0]
-            for plant in plants[ind]:
-                if zombie_x < count_x(plant[0]):
+        for plant in plants[ind]:
+            for zombik in zombieLine:
+                zombie_x = zombik[0]
+                if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
                     zombik[4] = 1 #set zombik animation to eat plant
                     plant[3] = 1 # set plant to remove
-                    
-                else:
-                    plant[3] = 0 # u kytky neni zombik, takže se HP neodebírají
 
+                    
+
+                print(plant[3])
 def loose():
-    pass
+    window.fill(c.BLACK)
+    font = pygame.font.Font('HERMES 1943.ttf', 170)
+    text = font.render("you lost", True, c.RED)
+    window.blit(text, (100, 100))
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+
+
+
+
 
 
 while True:
