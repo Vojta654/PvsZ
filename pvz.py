@@ -127,7 +127,7 @@ def on_mouse_up(event):
             plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 100
         if plant_type == 2:
-            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 0])# x,y, HP, mode, plant type,timer
+            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 30])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
         if plant_type == 4:
             plants[y-1].append([x, y, c.BOOMERANG_HP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
@@ -291,7 +291,6 @@ def plants_hp():
             pl_y = plant[1]
             if plant[3]==1:
                 plant[2] -= 1
-                print(plant[2])
                 if plant[2] == 0:
 
                     plants[index].remove(plant)
