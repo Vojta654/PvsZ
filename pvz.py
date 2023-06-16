@@ -5,7 +5,8 @@ suns = []
 mowers = []
 pygame.init()
 clock = pygame.time.Clock()
-sunCoin = 100
+sunCoin = 250
+difficulty = 0
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
 
@@ -50,7 +51,7 @@ def draw_board():
         for index in range(0, c.BOARD_SIZE_X, 2):
             pygame.draw.rect(window, c.SQUARE02_COLOR, (count_x(index + odd), count_y(j) + c.MENU_SIZE, c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
     # menu - vykreslení polí, na kterých bude možno vybírat kytky k položení
-    for index in range(3):
+    for index in range(4):
         if index +2 == plant_type:
             color = c.BLACK
         else:
@@ -62,10 +63,14 @@ def draw_board():
 
 
     #menu - obrázky rostlin + box na počítání peněz
-    window.blit(c.peashooterImage, (c.SQUARE_SIZE_X +10, 20))
+    
 
     window.blit(c.sunflowerImage, (0, 10))
+    window.blit(c.peashooterImage, (count_x(1) +10, 20))
     window.blit(c.boomerangImage, (count_x(2)-2, 0))
+    window.blit(c.repeaterPeaImages[3], (count_x(3)-2, 20))
+
+    
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
     text = font.render(str(sunCoin), True, c.BLACK)
@@ -112,7 +117,9 @@ def on_key_down(event):
     elif event.key == pygame.K_e: #sunflower
         if sunCoin >= 150:
             plant_type = 4
-
+    elif event.key == pygame.K_r: #repeaterPea
+        if sunCoin >= 200:
+            plant_type = 5
 
 
 
@@ -121,17 +128,20 @@ plants = [[], [],[],[],[]]
 def on_mouse_up(event):
     global current, plant_type, sunCoin
     x,y = current
-    if y > 0 and board[y-1][x] == 0:
+    if y > 0 and board[y-1][x] == 0 and y < count_y(c.BOARD_SIZE_Y)-5:
         board[y-1][x] = plant_type
         if plant_type == 3:
-            plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0])# x,y, HP, mode, plant type,timer
+            plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0, 0])# x,y, HP, mode, plant type,timer, image_number
             sunCoin -= 100
         if plant_type == 2:
-            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 30])# x,y, HP, mode, plant type,timer
+            plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 30, 0])# x,y, HP, mode, plant type,timer
             sunCoin -= 50
         if plant_type == 4:
             plants[y-1].append([x, y, c.BOOMERANG_HP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
             sunCoin -= 150
+        if plant_type == 5:
+            plants[y-1].append([x, y, c.REPEATER_PEA_HP, 0, 5, 0, 0])# x,y, HP, mode, plant type, timer, image_num
+            sunCoin -= 200
         plant_type = 0
 
 def on_mouse_down(event):
@@ -164,14 +174,44 @@ def update_plants():
     for index in range(len(plants)):
         line_plant = plants[index]
         for plant in line_plant:
-            if plant[4] == 2:
+            if plant[4] == 2:#sunflower
                 sunflower_suns(plant)
-            elif plant[4] == 3:
+                plant[6] += 0.3
+                plant[6] = round(plant[6], 3)
+                if plant[6] >= len(c.sunflowerImages) - 1:
+                    plant[6] = 0
+                    
+                    
+            elif plant[4] == 3:#peashooter
                 create_bullets(plant)
-            elif plant[4] == 4:
+                plant[6] += 0.3
+                plant[6] = round(plant[6], 3)
+                if plant[6] >= len(c.peashooterImages) - 1:
+                    plant[6] = 0
+            elif plant[4] == 4:#boomerang
                 create_boomerang(plant)
+                
+            elif plant[4] == 5:# repeater pea
+                create_bullets(plant)
+                plant[6] += 0.3
+                plant[6] = round(plant[6], 3)
+                if plant[6] >= len(c.repeaterPeaImages) - 1:
+                    plant[6] = 0
+sndBullet = 0                
 def create_bullets(plant):
+    global sndBullet
+   
+    if plant[4] == 3:
         if plant[5] % count_ticks(4) == 0:
+            bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
+        plant[5] += 1
+    elif plant[4] == 5:
+        if plant[5] % count_ticks(4) == 0 :
+            bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
+            sndBullet = plant[5] + 8
+            
+            
+        if plant[5] == sndBullet:
             bullets.append([count_x(plant[0])+ 10, count_y(plant[1] +0.25)])
         plant[5] += 1
 
@@ -187,8 +227,9 @@ def move_bullets():  # updatuje polohu střel
 def sunflower_suns(plant):
     if plant[5] % count_ticks(5) == 0:
         suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
-
+       
     plant[5] +=1
+
 
 def draw_suns():
     for sun in suns:
@@ -242,15 +283,15 @@ def check_contact():
 def mower_move():
     for mower in mowerList:
         if mower[2] == 1:
-            mower[0] += c.MOWER_SPEED
-            index = mower[1]// c.SQUARE_SIZE_Y -1
+            if mower[0] < count_x(c.BOARD_SIZE_X):
+                mower[0] += c.MOWER_SPEED
+                index = mower[1]// c.SQUARE_SIZE_Y -1
 
 
-            for zombik in normalZombiesList[index]:
-                if zombik[0] > mower[0] + 20 and zombik[0] < mower[0] + 70:
-                    normalZombiesList[index].remove(zombik)
-            if mower[0] > count_x(11):
-                mowerList.remove(mower)
+                for zombik in normalZombiesList[index]:
+                    if zombik[0] > mower[0] + 20 and zombik[0] < mower[0] + 70:
+                        normalZombiesList[index].remove(zombik)
+           
 
 def draw_mower():
     for mower in mowerList:
@@ -260,7 +301,7 @@ def draw_mower():
 
 def game_output():
     draw_board()
-    draw_plants()
+    draw_plants2()
     draw_suns()
     move_bullets()
     gamelevel_one()
@@ -269,13 +310,27 @@ def game_output():
     draw_boomerang()
 
 
+
+def draw_plants2():
+    for lineNum in range(5):
+        for plant in plants[lineNum]:
+            if plant[4] == 2:
+                window.blit(c.sunflowerImages[round(plant[6])], (count_x(plant[0]), count_y(plant[1])+10))#sunflower
+            elif plant[4] ==3:
+                window.blit(c.peashooterImages[round(plant[6])], (count_x(plant[0])+10, count_y(plant[1])+20))#peashooter
+            elif plant[4] ==4:
+                window.blit(c.boomerangImage, (count_x(plant[0]) -2, count_y(plant[1])))#boomerang - plant
+            elif plant[4] ==5:
+                window.blit(c.repeaterPeaImages[round(plant[6])], (count_x(plant[0]) -2, count_y(plant[1]) +15))#repeater pea - plant
+
+
 def draw_plants():
     for ind in range(c.BOARD_SIZE_Y):
         line = board[ind]
         for j in range(len(line)):
             square = line[j]
             if square == 2:
-                window.blit(c.sunflowerImage, (count_x(j), count_y(ind + 1)+10))#sunflower
+                window.blit(c.sunflowerImages[plant[5]], (count_x(j), count_y(ind + 1)+10))#sunflower
             elif square ==3:
                 window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
             elif square ==4:
@@ -318,67 +373,67 @@ def updateNormalZombie():
             if normalZombiesList[line][zombik][4] == 0: # animace walk
 
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1 #další snímek v animaci
+                currentZombieImage += 0.8 #další snímek v animaci
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-                if currentZombieImage >= len(c.NormalZombieImages):
+                if currentZombieImage >= len(c.NormalZombieImages) - 1:
                     currentZombieImage = 0
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 #zobrazení
-                window.blit(c.NormalZombieImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.NormalZombieImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
             if normalZombiesList[line][zombik][4] == 10: # animace attack
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1  # další snímek v animaci
-                if currentZombieImage >= len(c.NormalZombieAttackImages):
+                currentZombieImage += 0.5  # další snímek v animaci
+                if currentZombieImage >= len(c.NormalZombieAttackImages) - 1:
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
-                window.blit(c.NormalZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.NormalZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
                 
             # cone head zombie
             if normalZombiesList[line][zombik][4] == 1: # animace walk
 
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1 #další snímek v animaci
+                currentZombieImage += 0.6 #další snímek v animaci
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-                if currentZombieImage >= len(c.ConeheadZombieImages):
+                if currentZombieImage >= len(c.ConeheadZombieImages) -1:
                     currentZombieImage = 0
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 #zobrazení
-                window.blit(c.ConeheadZombieImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.ConeheadZombieImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
             
             if normalZombiesList[line][zombik][4] == 11: # animace attack
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1  # další snímek v animaci
-                if currentZombieImage >= len(c.ConeheadZombieAttackImages):
+                currentZombieImage += 0.5  # další snímek v animaci
+                if currentZombieImage >= len(c.ConeheadZombieAttackImages) - 1:
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
-                window.blit(c.ConeheadZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.ConeheadZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
                 
                 
             #buckethead zombie
             if normalZombiesList[line][zombik][4] == 2: # animace walk
 
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1 #další snímek v animaci
+                currentZombieImage += 0.4 #další snímek v animaci
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
-                if currentZombieImage >= len(c.BucketheadZombieImages):
+                if currentZombieImage >= len(c.BucketheadZombieImages) -1:
                     currentZombieImage = 0
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 #zobrazení
-                window.blit(c.BucketheadZombieImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.BucketheadZombieImages[round(currentZombieImage)], (zombie_x, zombie_y))
                 
             if normalZombiesList[line][zombik][4] == 12: # animace attack
                 currentZombieImage = normalZombiesList[line][zombik][2]
-                currentZombieImage += 1  # další snímek v animaci
-                if currentZombieImage >= len(c.BucketheadZombieAttackImages):
+                currentZombieImage += 0.4  # další snímek v animaci
+                if currentZombieImage >= len(c.BucketheadZombieAttackImages) -1:
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
-                window.blit(c.BucketheadZombieAttackImages[currentZombieImage], (zombie_x, zombie_y))
+                window.blit(c.BucketheadZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y))
 
 def create_normal_zombie(lineNum, type):
     hp = 0
@@ -390,15 +445,18 @@ def create_normal_zombie(lineNum, type):
         hp = c.BUCKETHEADZOMBIE_HP
         
     normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, hp, type])
-    print(type)
     #udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku +typ 0, 1, 2 jde; 10, 11, 12 žere
 
 def gamelevel_one():
+    global difficulty
     if round(time, 2) % 2 == 0:
-        create_normal_zombie(random.randint(0, 4), random.randint(0, 2))
-
-
-
+        create_normal_zombie(random.randint(0, 4), random.randint(0, difficulty))
+    if round(time) % 30 == 0 and round(time) > 1:
+        difficulty =1
+    if round(time) % 60 == 0 and round(time) > 1:
+        difficulty = 2 
+        
+    
 def platns_zombie_contact():
     for ind in range(5):
         zombieLine = normalZombiesList[ind]

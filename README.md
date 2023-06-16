@@ -7,5 +7,5 @@ Jednotlivé kroky
 5. při kontaktu střely a zombíka, se zombíkovi uberou HP a střela zmizí
 6. zombík ubírá HP kytkám
 
-plants : # x,y, HP, mode, plant type,timer
+plants : # x,y, HP, mode, plant type,timer, image
 #udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
