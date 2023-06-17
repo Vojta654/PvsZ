@@ -5,7 +5,7 @@ suns = []
 mowers = []
 pygame.init()
 clock = pygame.time.Clock()
-sunCoin = 250
+sunCoin = 100
 difficulty = 0
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
@@ -451,6 +451,7 @@ def gamelevel_one():
     global difficulty
     if round(time, 2) % 2 == 0:
         create_normal_zombie(random.randint(0, 4), random.randint(0, difficulty))
+
     if round(time) % 30 == 0 and round(time) > 1:
         difficulty =1
     if round(time) % 60 == 0 and round(time) > 1:
