@@ -101,7 +101,7 @@ for i in range(18):
     sunflowerImages.append(image)
     
     
-PEASHOOTER_IMAGE_SIZE = (116, 120)
+PEASHOOTER_IMAGE_SIZE = (116, SQUARE_SIZE_X)
 peashooterImages = []
 for i in range(13):
     img = pygame.image.load(os.path.join("data/Plants/Peashooter", "Peashooter_" + str(i) + ".png"))
