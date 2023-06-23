@@ -51,7 +51,7 @@ def draw_board():
         for index in range(0, c.BOARD_SIZE_X, 2):
             pygame.draw.rect(window, c.SQUARE02_COLOR, (count_x(index + odd), count_y(j) + c.MENU_SIZE, c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
     # menu - vykreslení polí, na kterých bude možno vybírat kytky k položení
-    for index in range(4):
+    for index in range(5):
         if index +2 == plant_type:
             color = c.BLACK
         else:
@@ -69,6 +69,7 @@ def draw_board():
     window.blit(c.peashooterImage, (count_x(1) +10, 20))
     window.blit(c.boomerangImage, (count_x(2)-2, 0))
     window.blit(c.repeaterPeaImages[3], (count_x(3)-2, 20))
+    window.blit(c.wallNutImage, (count_x(4) +10, 17))
 
     
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
@@ -120,6 +121,9 @@ def on_key_down(event):
     elif event.key == pygame.K_r: #repeaterPea
         if sunCoin >= 200:
             plant_type = 5
+    elif event.key == pygame.K_t: #wallNut
+        if sunCoin >= 50:
+            plant_type = 6
 
 
 
@@ -142,6 +146,9 @@ def on_mouse_up(event):
         if plant_type == 5:
             plants[y-1].append([x, y, c.REPEATER_PEA_HP, 0, 5, 0, 0])# x,y, HP, mode, plant type, timer, image_num
             sunCoin -= 200
+        if plant_type == 6:
+            plants[y-1].append([x, y, c.WALL_NUT_HP, 0, 6, 0, 0])# x,y, HP, mode, plant type, timer, image_num
+            sunCoin -= 50
         plant_type = 0
 
 def on_mouse_down(event):
@@ -301,7 +308,7 @@ def draw_mower():
 
 def game_output():
     draw_board()
-    draw_plants2()
+    draw_plants()
     draw_suns()
     move_bullets()
     gamelevel_one()
@@ -311,7 +318,7 @@ def game_output():
 
 
 
-def draw_plants2():
+def draw_plants():
     for lineNum in range(5):
         for plant in plants[lineNum]:
             if plant[4] == 2:
@@ -322,20 +329,8 @@ def draw_plants2():
                 window.blit(c.boomerangImage, (count_x(plant[0]) -2, count_y(plant[1])))#boomerang - plant
             elif plant[4] ==5:
                 window.blit(c.repeaterPeaImages[round(plant[6])], (count_x(plant[0]) -2, count_y(plant[1]) +15))#repeater pea - plant
-
-
-def draw_plants():
-    for ind in range(c.BOARD_SIZE_Y):
-        line = board[ind]
-        for j in range(len(line)):
-            square = line[j]
-            if square == 2:
-                window.blit(c.sunflowerImages[plant[5]], (count_x(j), count_y(ind + 1)+10))#sunflower
-            elif square ==3:
-                window.blit(c.peashooterImage, (count_x(j)+10, count_y(ind + 1)+20))#peashooter
-            elif square ==4:
-                window.blit(c.boomerangImage, (count_x(j) -2, count_y(ind + 1)))#boomerang - plant
-
+            elif plant[4] ==6:
+                window.blit(c.wallNutImage, (count_x(plant[0]) +10, count_y(plant[1]) +15))#wall nut
 
 
 

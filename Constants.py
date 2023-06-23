@@ -37,7 +37,8 @@ REPEATER_PEA_HP = 5 * FPS
 # image load - potřeba vybrat správnou velikost
 zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
-
+#wall nut
+WALL_NUT_HP = 30* FPS
 #flower image load
 peashooterImage = pygame.image.load("data/peashooter.png")
 sunflowerImage = pygame.image.load("data/sunflower.png")
@@ -107,13 +108,13 @@ for i in range(13):
     img = pygame.image.load(os.path.join("data/Plants/Peashooter", "Peashooter_" + str(i) + ".png"))
     image = pygame.transform.scale(img, PEASHOOTER_IMAGE_SIZE)
     peashooterImages.append(image)
-    
-print(len(peashooterImages))
 
 repeaterPeaImages = []
 for i in range(15):
     img = pygame.image.load(os.path.join("data/Plants/RepeaterPea", "RepeaterPea_" + str(i) + ".png"))
     image = pygame.transform.scale(img, PEASHOOTER_IMAGE_SIZE)
     repeaterPeaImages.append(image)
-    
-print(len(repeaterPeaImages))
+
+
+
+wallNutImage = pygame.image.load("data/Plants/WallNut/wallNut.png")
