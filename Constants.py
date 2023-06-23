@@ -118,3 +118,4 @@ for i in range(15):
 
 
 wallNutImage = pygame.image.load("data/Plants/WallNut/wallNut.png")
+print("orel")

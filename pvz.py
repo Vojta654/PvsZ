@@ -115,7 +115,7 @@ def on_key_down(event):
         if sunCoin >= 100:
             plant_type = 3
 
-    elif event.key == pygame.K_e: #sunflower
+    elif event.key == pygame.K_e: #boomerang
         if sunCoin >= 150:
             plant_type = 4
     elif event.key == pygame.K_r: #repeaterPea
