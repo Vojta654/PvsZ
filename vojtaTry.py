@@ -25,7 +25,7 @@ for index in range(c.NUM_PLANTS):
 pygame.draw.rect(window, c.YELLOW, (count_x(9), count_y(5), c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
 
 # input - možnost vybírání a pokládání rostlin
-def game_input():
+def game_input0():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
@@ -44,7 +44,7 @@ def on_mouse_motion(event):
     y = my // c.SQUARE_SIZE_Y
     current = x, y
 
-def on_mouse_up(event):
+def on_mouse_up0(event):
     global current, plant_type, sunCoin
     x,y = current
     if y == 1:
@@ -80,7 +80,15 @@ def on_mouse_up(event):
             
 def start_game():
     if 0 not in selected_plants:
-            exit()          
+        file = open("datasave.txt", "w")
+        data = ""
+        for index in range(len(selected_plants)):
+            data += str(selected_plants[index])+ "\n"
+        file.write(data)
+        file.close
+        os.system("pvz.py")   
+        exit()
+                   
             
 all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage]
 selected_plants = []
@@ -102,7 +110,7 @@ def draw_selected_plants():
 
 
 while True:
-    game_input()
+    game_input0()
     draw_all_plants()
     draw_selected_plants()
     pygame.display.flip()

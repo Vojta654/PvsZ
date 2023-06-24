@@ -39,6 +39,7 @@ for i in range(1, 6):
     mowerList.append([0, count_y(i), 0])
 
 def draw_board():
+    global color
     global plant_type
     window.fill(c.SQUARE01_COLOR)
     odd = 0
@@ -52,7 +53,7 @@ def draw_board():
             pygame.draw.rect(window, c.SQUARE02_COLOR, (count_x(index + odd), count_y(j) + c.MENU_SIZE, c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
     # menu - vykreslení polí, na kterých bude možno vybírat kytky k položení
     for index in range(5):
-        if index +2 == plant_type:
+        if index == highlighted_slot:
             color = c.BLACK
         else:
             color = c.GREY
@@ -63,13 +64,8 @@ def draw_board():
 
 
     #menu - obrázky rostlin + box na počítání peněz
-    
-
-    window.blit(c.sunflowerImage, (0, 10))
-    window.blit(c.peashooterImage, (count_x(1) +10, 20))
-    window.blit(c.boomerangImage, (count_x(2)-2, 0))
-    window.blit(c.repeaterPeaImages[3], (count_x(3)-2, 20))
-    window.blit(c.wallNutImage, (count_x(4) +10, 17))
+    for index in range(len(selected_plants)):
+        window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
 
     
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
@@ -104,33 +100,61 @@ def on_mouse_motion(event):
 
 
 plant_type = 0
+prizes = {
+    2 : 50,
+    3 : 100,
+    4 : 150,
+    5 : 200,
+    6 : 50,
+    0 : 0
+}
+highlighted_slot = None
 def on_key_down(event):
+    global highlighted_slot
     global plant_type
     plant_type = 0
-    if event.key == pygame.K_q:#sunflower
-        if sunCoin >= 50:
-            plant_type = 2
+    if event.key == pygame.K_q:#slot1
+        plant_type = selected_plants[0]
+        if check_sunCoin(plant_type):
+            highlighted_slot = 0
+        
+        
+    elif event.key == pygame.K_w: #slot2
+        plant_type = selected_plants[1]
+        if check_sunCoin(plant_type):
+            highlighted_slot = 1
+    
+    elif event.key == pygame.K_e: #slot3
+        plant_type = selected_plants[2]
+        if check_sunCoin(plant_type):
+            highlighted_slot = 2
+        
+    elif event.key == pygame.K_r: #slot4
+        plant_type = selected_plants[3]
+        if check_sunCoin(plant_type):
+            highlighted_slot = 3
+        
+    elif event.key == pygame.K_t: #slot5
+        plant_type = selected_plants[4]
+        if check_sunCoin(plant_type):
+            highlighted_slot = 4
+    
+    print(highlighted_slot)
 
-    elif event.key == pygame.K_w: #peashooter
-        if sunCoin >= 100:
-            plant_type = 3
-
-    elif event.key == pygame.K_e: #boomerang
-        if sunCoin >= 150:
-            plant_type = 4
-    elif event.key == pygame.K_r: #repeaterPea
-        if sunCoin >= 200:
-            plant_type = 5
-    elif event.key == pygame.K_t: #wallNut
-        if sunCoin >= 50:
-            plant_type = 6
-
-
-
+def check_sunCoin(typ):
+    global plant_type, highlighted_slot
+    if prizes[typ] <= sunCoin:
+        print("enough money")
+        print(prizes[typ])
+        return True
+    else:
+        plant_type = 0
+        return False
+        
      
 plants = [[], [],[],[],[]]
 def on_mouse_up(event):
-    global current, plant_type, sunCoin
+    global current, plant_type, sunCoin, highlighted_slot
     x,y = current
     if y > 0 and board[y-1][x] == 0 and y < count_y(c.BOARD_SIZE_Y)-5:
         board[y-1][x] = plant_type
@@ -150,6 +174,7 @@ def on_mouse_up(event):
             plants[y-1].append([x, y, c.WALL_NUT_HP, 0, 6, 0, 0])# x,y, HP, mode, plant type, timer, image_num
             sunCoin -= 50
         plant_type = 0
+        highlighted_slot = None
 
 def on_mouse_down(event):
     global sunCoin, current
@@ -474,11 +499,96 @@ def loose():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+def game_input0():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+        elif event.type == pygame.MOUSEMOTION:
+            on_mouse_motion(event)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            on_mouse_up0(event)
+            
+all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage]
+selected_plants = []
+for i in range(c.NUM_PLANTS):
+    selected_plants.append(0)
 
+def on_mouse_up0(event):
+    global current, plant_type, sunCoin
+    x,y = current
+    if y == 1:
+        if x == 0:
+            print("sunflower")
+            plant_type = 2
+        elif x == 1:
+            plant_type = 3
+            print("peashooterImage")
+        elif x == 2:
+            plant_type = 4
+            print("boomerangImage")
+        elif x == 3:
+            plant_type = 5
+            print("repeaterPeaImages")
+        elif x == 4:
+            plant_type = 6
+            print("wallNutImage")
+        if plant_type >= 2:
+            for index in range(len(selected_plants)):
+                if selected_plants[index] == 0 and plant_type not in selected_plants:
+                    selected_plants[index] = plant_type  
+                    plant_type = 0
+            
+    elif y == 5 and x == 9:
+        start_game()
+    if y == 0:
+        selected_plants.remove(selected_plants[x])
+        print(selected_plants)
+        selected_plants.append(0)
+        print(selected_plants)
+        
+def draw_all_plants():
+    for index in range(len(all_plants_images)):
+        plant = all_plants_images[index]
+        window.blit(plant, (count_x(index), count_y(1) + 20))
+    
 
+def draw_selected_plants():
+    for index in range(c.NUM_PLANTS):
+        if selected_plants[index] != 0:
+            window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
+    
+def start_game():
+    global menu
+    if 0 not in selected_plants:
+        file = open("datasave.txt", "w")
+        data = ""
+        for index in range(len(selected_plants)):
+            data += str(selected_plants[index])+ "\n"
+        file.write(data)
+        file.close  
+        menu = False
 
+menu = True
+def draw_menu():
+    window.fill(c.SQUARE01_COLOR)
+    #vykreslení menu kam se budou dávat vybrané kytky
+    for index in range(c.NUM_PLANTS):
+            if index +2 == plant_type:
+                color = c.BLACK
+            else:
+                color = c.GREY
+            pygame.draw.rect(window, color, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
+                
+    #confirmation button
+    pygame.draw.rect(window, c.YELLOW, (count_x(9), count_y(5), c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
 
-
+while menu:#selecting menu
+    game_input0()
+    draw_menu()
+    draw_all_plants()
+    draw_selected_plants()
+    pygame.display.flip()
+    
 
 while True:
     game_input()
