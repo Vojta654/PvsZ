@@ -138,14 +138,11 @@ def on_key_down(event):
         plant_type = selected_plants[4]
         if check_sunCoin(plant_type):
             highlighted_slot = 4
-    
-    print(highlighted_slot)
+
 
 def check_sunCoin(typ):
     global plant_type, highlighted_slot
     if prizes[typ] <= sunCoin:
-        print("enough money")
-        print(prizes[typ])
         return True
     else:
         plant_type = 0
@@ -542,9 +539,7 @@ def on_mouse_up0(event):
         start_game()
     if y == 0:
         selected_plants.remove(selected_plants[x])
-        print(selected_plants)
         selected_plants.append(0)
-        print(selected_plants)
         
 def draw_all_plants():
     for index in range(len(all_plants_images)):
@@ -560,12 +555,6 @@ def draw_selected_plants():
 def start_game():
     global menu
     if 0 not in selected_plants:
-        file = open("datasave.txt", "w")
-        data = ""
-        for index in range(len(selected_plants)):
-            data += str(selected_plants[index])+ "\n"
-        file.write(data)
-        file.close  
         menu = False
 
 menu = True
