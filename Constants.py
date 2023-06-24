@@ -9,6 +9,7 @@ SQUARE02_COLOR = (3, 100, 3)
 MENU_SIZE = SQUARE_SIZE_Y
 MENU_COLOR = (100, 100, 250)
 MONEY_COUNTER_BOX = (SQUARE_SIZE_X * 8, 10, SQUARE_SIZE_X *2 - 10, SQUARE_SIZE_Y /2)
+NUM_PLANTS = 5# počet kytek během hry v menu
 FPS = 30
 #colors
 BLACK = (0, 0, 0) # menu buttons backgrounb color
@@ -118,4 +119,3 @@ for i in range(15):
 
 
 wallNutImage = pygame.image.load("data/Plants/WallNut/wallNut.png")
-print("orel")

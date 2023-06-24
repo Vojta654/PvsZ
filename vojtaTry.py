@@ -14,13 +14,15 @@ plant_type = 0
 window = pygame.display.set_mode((count_x(c.BOARD_SIZE_X), count_y(c.BOARD_SIZE_Y) + c.MENU_SIZE))
 window.fill(c.SQUARE01_COLOR)
 #vykreslení menu kam se budou dávat vybrané kytky
-for index in range(7):
+for index in range(c.NUM_PLANTS):
         if index +2 == plant_type:
             color = c.BLACK
         else:
             color = c.GREY
         pygame.draw.rect(window, color, (count_x(index) + 1, 2, c.SQUARE_SIZE_X - 2, c.SQUARE_SIZE_Y - 4))
-
+        
+#confirmation button
+pygame.draw.rect(window, c.YELLOW, (count_x(9), count_y(5), c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
 
 # input - možnost vybírání a pokládání rostlin
 def game_input():
@@ -65,14 +67,24 @@ def on_mouse_up(event):
             for index in range(len(selected_plants)):
                 if selected_plants[index] == 0 and plant_type not in selected_plants:
                     selected_plants[index] = plant_type  
-                    plant_type = 0  
-        plant_type = 0          
+                    plant_type = 0
             
+    elif y == 5 and x == 9:
+        start_game()
+    if y == 0:
+        selected_plants.remove(selected_plants[x])
+        print(selected_plants)
+        selected_plants.append(0)
+        print(selected_plants)
+        
             
+def start_game():
+    if 0 not in selected_plants:
+            exit()          
             
 all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage]
 selected_plants = []
-for i in range(7):
+for i in range(c.NUM_PLANTS):
     selected_plants.append(0)
 
 
@@ -82,8 +94,8 @@ def draw_all_plants():
         window.blit(plant, (count_x(index), count_y(1) + 20))
     
 
-def draw_plants():
-    for index in range(7):
+def draw_selected_plants():
+    for index in range(c.NUM_PLANTS):
         if selected_plants[index] != 0:
             window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
     
@@ -92,6 +104,6 @@ def draw_plants():
 while True:
     game_input()
     draw_all_plants()
-    draw_plants()
+    draw_selected_plants()
     pygame.display.flip()
     
