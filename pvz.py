@@ -111,9 +111,10 @@ prizes = {
     0 : 0
     #addplant
 }
+remove_mode = 0
 highlighted_slot = None
 def on_key_down(event):
-    global highlighted_slot
+    global highlighted_slot, remove_mode
     global plant_type
     plant_type = 0
     if event.key == pygame.K_q:#slot1
@@ -141,6 +142,9 @@ def on_key_down(event):
         plant_type = selected_plants[4]
         if check_sunCoin(plant_type):
             highlighted_slot = 4
+    
+    elif event.key == pygame.K_BACKSPACE:
+        remove_mode = 1
 
 
 def check_sunCoin(typ):
@@ -183,13 +187,24 @@ def on_mouse_up(event):
         highlighted_slot = None
 
 def on_mouse_down(event):
-    global sunCoin, current
+    global sunCoin, current, remove_mode
     x,y = current
-    for sun in suns:
-        if x == sun[0] // c.SQUARE_SIZE_X and y == sun[1]// c.SQUARE_SIZE_Y:
-            sunCoin += 50
-            suns.remove(sun)
-
+    if remove_mode == 0:
+        for sun in suns:
+            if x == sun[0] // c.SQUARE_SIZE_X and y == sun[1]// c.SQUARE_SIZE_Y:
+                sunCoin += 50
+                suns.remove(sun)
+    if remove_mode == 1:
+        board[y -1][x] =0
+        for line in range(5):
+            for plant in plants[line]:
+                if plant[0] == x and plant[1] == y:
+                    plants[line].remove(plant)
+                    remove_mode = 0
+                    for num in range(prizes[plant[4]]//50):
+                        suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
+                    break
+        
 def game_update():
     mode_reset()
     platns_zombie_contact()
@@ -267,7 +282,7 @@ def move_bullets():  # updatuje polohu střel
 def sunflower_suns(plant):
     if plant[5] % count_ticks(5) == 0:
         suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
-    
+
     plant[5] +=1
 
 
