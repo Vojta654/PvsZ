@@ -5,7 +5,7 @@ suns = []
 mowers = []
 pygame.init()
 clock = pygame.time.Clock()
-sunCoin = 100
+sunCoin = 250
 difficulty = 0
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
@@ -106,7 +106,10 @@ prizes = {
     4 : 150,
     5 : 200,
     6 : 50,
+    7 : 25,
+    8 : 200,
     0 : 0
+    #addplant
 }
 highlighted_slot = None
 def on_key_down(event):
@@ -155,21 +158,27 @@ def on_mouse_up(event):
     x,y = current
     if y > 0 and board[y-1][x] == 0 and y < count_y(c.BOARD_SIZE_Y)-5:
         board[y-1][x] = plant_type
-        if plant_type == 3:
-            plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0, 0])# x,y, HP, mode, plant type,timer, image_number
-            sunCoin -= 100
         if plant_type == 2:
             plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 30, 0])# x,y, HP, mode, plant type,timer
-            sunCoin -= 50
-        if plant_type == 4:
+            sunCoin -= prizes[2]
+        elif plant_type == 3:
+            plants[y-1].append([x, y, c.PEASHOOTERHP, 0, 3, 0, 0])# x,y, HP, mode, plant type,timer, image_number
+            sunCoin -= prizes[3]
+        elif plant_type == 4:
             plants[y-1].append([x, y, c.BOOMERANG_HP, 0, 4, 0])# x,y, HP, mode, plant type, create boomerang
-            sunCoin -= 150
-        if plant_type == 5:
+            sunCoin -= prizes[4]
+        elif plant_type == 5:
             plants[y-1].append([x, y, c.REPEATER_PEA_HP, 0, 5, 0, 0])# x,y, HP, mode, plant type, timer, image_num
-            sunCoin -= 200
-        if plant_type == 6:
+            sunCoin -= prizes[5]
+        elif plant_type == 6:
             plants[y-1].append([x, y, c.WALL_NUT_HP, 0, 6, 0, 0])# x,y, HP, mode, plant type, timer, image_num
-            sunCoin -= 50
+            sunCoin -= prizes[6]
+        elif plant_type == 7:
+            plants[y-1].append([x, y, 1, 0, 7, 0, 0])# x,y, HP, mode, plant type, timer, image_num
+            sunCoin -= prizes[7]
+        elif plant_type == 8:
+            plants[y-1].append([x, y, c.LASER_BEAN_HP, 0, 8, 1, 0])# x,y, HP, mode, plant type, timer, image_num
+            sunCoin -= prizes[8]
         plant_type = 0
         highlighted_slot = None
 
@@ -226,6 +235,8 @@ def update_plants():
                 plant[6] = round(plant[6], 3)
                 if plant[6] >= len(c.repeaterPeaImages) - 1:
                     plant[6] = 0
+            elif plant[4] == 8:
+                create_laser(plant, index) 
 sndBullet = 0                
 def create_bullets(plant):
     global sndBullet
@@ -256,7 +267,7 @@ def move_bullets():  # updatuje polohu střel
 def sunflower_suns(plant):
     if plant[5] % count_ticks(5) == 0:
         suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
-       
+    
     plant[5] +=1
 
 
@@ -289,12 +300,34 @@ def draw_boomerang():
     for boomerang in boomerangs:
         pygame.draw.rect(window, c.YELLOW, (boomerang[1], boomerang[2], c.BOOMERANG_X, c.BOOMERANG_Y))
         
+lasers = []
+def create_laser(plant, index):
+    if plant[5] % count_ticks(2) == 0:
+        lasers.append([count_x(plant[0]), count_y(plant[1]), c.FPS])
+        for zombik in normalZombiesList[index]:
+            if zombik[0] > count_x(plant[0]) and zombik[0] < window.get_width() - 20:    
+                zombik[3] -= 150
+                if zombik[3] <= 0:
+                    normalZombiesList[index].remove(zombik) 
+    plant[5] +=1
+            
+            
+def draw_lasers():
+    for laser in lasers:
+        print(lasers)
+        if laser[2] >=0:
+            pygame.draw.rect(window, c.GREEN, (laser[0] + 60, laser[1] + 60, window.get_width() - laser[0], 15))
+        laser[2] -=1
+        if laser[2] < 0:
+            lasers.remove(laser)
+            
+            
 def check_contact():
     for bullet in bullets: #peashoter bullet contact check
         line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) >0:
             if bullet[0] > normalZombiesList[line][0][0] + 25 and bullet[0] > normalZombiesList[line][0][0] + 26 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED: # if hit: -1HP, bullet remove
-                normalZombiesList[line][0][3] -=1
+                normalZombiesList[line][0][3] -= 350
                 bullets.remove(bullet)
                 
             if normalZombiesList[line][0][3] == 0:
@@ -305,7 +338,7 @@ def check_contact():
             for zombik in normalZombiesList[line]:
                 
                 if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+ 51 + c.ZOMBIE_SPEED*c.BOOMERANG_SPEED:
-                    zombik[3] -=1
+                    zombik[3] -= 200
                 if normalZombiesList[line][0][3] == 0:
                     normalZombiesList[line].remove(zombik)
 
@@ -337,6 +370,7 @@ def game_output():
     updateNormalZombie()
     draw_mower()
     draw_boomerang()
+    draw_lasers()
 
 
 
@@ -353,7 +387,11 @@ def draw_plants():
                 window.blit(c.repeaterPeaImages[round(plant[6])], (count_x(plant[0]) -2, count_y(plant[1]) +15))#repeater pea - plant
             elif plant[4] ==6:
                 window.blit(c.wallNutImage, (count_x(plant[0]) +10, count_y(plant[1]) +15))#wall nut
-
+            elif plant[4] ==7:
+                window.blit(c.potatoeBombImage, (count_x(plant[0]) +10, count_y(plant[1]) +50))#potatoe bomb
+            elif plant[4] ==8:
+                window.blit(c.laserBeanImage, (count_x(plant[0]) +10, count_y(plant[1]) +10))#laser bean
+            #addplant
 
 
 def plants_hp():
@@ -364,7 +402,7 @@ def plants_hp():
             pl_y = plant[1]
             if plant[3]==1:
                 plant[2] -= 1
-                if plant[2] == 0:
+                if plant[2] <= 0:
 
                     plants[index].remove(plant)
                     board[pl_y-1][pl_x] = 0
@@ -483,7 +521,13 @@ def platns_zombie_contact():
                 zombie_x = zombik[0]
                 if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
                     zombik[4] += 10 #set zombik animation to eat plant
-                    plant[3] = 1 # set plant to remove
+                    plant[3] = 1 # set plant to remove HPs
+                    if plant[4] == 7: #potatoe bomb
+                        plant[3] = 1
+                        normalZombiesList[ind].remove(zombik)
+                        for zombie in normalZombiesList[ind]:
+                            if abs(zombie[0] - zombik[0]) <= 50:
+                                normalZombiesList[ind].remove(zombie)
 
                     
 def loose():
@@ -505,7 +549,7 @@ def game_input0():
         elif event.type == pygame.MOUSEBUTTONUP:
             on_mouse_up0(event)
             
-all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage]
+all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage, c.potatoeBombImage, c.laserBeanImage]#addplant
 selected_plants = []
 for i in range(c.NUM_PLANTS):
     selected_plants.append(0)
@@ -529,6 +573,14 @@ def on_mouse_up0(event):
         elif x == 4:
             plant_type = 6
             print("wallNutImage")
+        elif x == 5:
+            plant_type = 7
+            print("potatoeBombImage")
+        elif x == 6:
+            plant_type = 8
+            print("laserBeanImage")
+        
+        #addplant
         if plant_type >= 2:
             for index in range(len(selected_plants)):
                 if selected_plants[index] == 0 and plant_type not in selected_plants:

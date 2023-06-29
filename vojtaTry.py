@@ -32,7 +32,7 @@ def game_input0():
         elif event.type == pygame.MOUSEMOTION:
             on_mouse_motion(event)
         elif event.type == pygame.MOUSEBUTTONUP:
-            on_mouse_up(event)
+            on_mouse_up0(event)
         
 
 current = 0, 0
@@ -73,9 +73,7 @@ def on_mouse_up0(event):
         start_game()
     if y == 0:
         selected_plants.remove(selected_plants[x])
-        print(selected_plants)
         selected_plants.append(0)
-        print(selected_plants)
         
             
 def start_game():

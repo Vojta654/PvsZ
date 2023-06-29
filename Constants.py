@@ -15,7 +15,7 @@ FPS = 30
 BLACK = (0, 0, 0) # menu buttons backgrounb color
 GREY = (169,169,169)
 WHITE = (255,255,255)
-GREEM = (0, 255, 0)
+GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 YELLOW = (255,255,0)
@@ -40,6 +40,8 @@ zombie = pygame.image.load("data/zombie.png")
 zombieKyblImage = pygame.image.load("data/zombieKybl.png")
 #wall nut
 WALL_NUT_HP = 30* FPS
+#laser beam
+LASER_BEAN_HP = 4 * FPS
 #flower image load
 peashooterImage = pygame.image.load("data/peashooter.png")
 sunflowerImage = pygame.image.load("data/sunflower.png")
@@ -47,9 +49,9 @@ boomerangImage = pygame.image.load("data/boomerang.png")
 sunImage = pygame.image.load("data/sun.png")
 mower_manImage = pygame.image.load("data/mower_men.png")
 #NormalZombie
-NormalZombieHP = 3
-CONEHEADZOMBIE_HP = 5
-BUCKETHEADZOMBIE_HP = 7
+NormalZombieHP = 1000
+CONEHEADZOMBIE_HP = 1700
+BUCKETHEADZOMBIE_HP = 2500
 ZOMBIE_SPEED = 0.6 # o kolik se posunou za jedent tik
 NormalZombieImages = []
 
@@ -119,3 +121,5 @@ for i in range(15):
 
 
 wallNutImage = pygame.image.load("data/Plants/WallNut/wallNut.png")
+potatoeBombImage = pygame.image.load("data/Plants/PotatoeBomb/potatoeBomb.png")
+laserBeanImage = pygame.image.load("data/Plants/LaserBean/laserBean.png")
