@@ -5,7 +5,7 @@ suns = []
 mowers = []
 pygame.init()
 clock = pygame.time.Clock()
-sunCoin = 250
+sunCoin = 100
 difficulty = 0
 def count_x(number_x):
     return number_x * c.SQUARE_SIZE_X
@@ -329,7 +329,6 @@ def create_laser(plant, index):
             
 def draw_lasers():
     for laser in lasers:
-        print(lasers)
         if laser[2] >=0:
             pygame.draw.rect(window, c.GREEN, (laser[0] + 60, laser[1] + 60, window.get_width() - laser[0], 15))
         laser[2] -=1
@@ -352,7 +351,7 @@ def check_contact():
         if len(normalZombiesList[line]) > 0:
             for zombik in normalZombiesList[line]:
                 
-                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+ 51 + c.ZOMBIE_SPEED*c.BOOMERANG_SPEED:
+                if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+ 52 + c.ZOMBIE_SPEED*c.BOOMERANG_SPEED:
                     zombik[3] -= 200
                 if normalZombiesList[line][0][3] == 0:
                     normalZombiesList[line].remove(zombik)
@@ -415,16 +414,13 @@ def plants_hp():
         for plant in plantLine:
             pl_x = plant[0]
             pl_y = plant[1]
-            if plant[3]==1:
-                plant[2] -= 1
-                if plant[2] <= 0:
-
-                    plants[index].remove(plant)
-                    board[pl_y-1][pl_x] = 0
-                    if plant[4] == 4:
-                        for boomerang in boomerangs: #odebere boomerang když umře kytka
-                            if plant[0] ==( boomerang[1] -30) // c.SQUARE_SIZE_X:
-                                boomerangs.remove(boomerang)
+            if plant[2] <= 0:
+                plants[index].remove(plant)
+                board[pl_y-1][pl_x] = 0
+                if plant[4] == 4:
+                    for boomerang in boomerangs: #odebere boomerang když umře kytka
+                        if count_x(plant[0]) ==( boomerang[0] -30):
+                            boomerangs.remove(boomerang)
 
 
 
@@ -536,9 +532,9 @@ def platns_zombie_contact():
                 zombie_x = zombik[0]
                 if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
                     zombik[4] += 10 #set zombik animation to eat plant
-                    plant[3] = 1 # set plant to remove HPs
+                    plant[2] -= 1 # set plant to remove HPs
                     if plant[4] == 7: #potatoe bomb
-                        plant[3] = 1
+                        plant[2] = -1
                         normalZombiesList[ind].remove(zombik)
                         for zombie in normalZombiesList[ind]:
                             if abs(zombie[0] - zombik[0]) <= 50:
