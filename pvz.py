@@ -66,7 +66,7 @@ def draw_board():
     #menu - obrázky rostlin + box na počítání peněz
     for index in range(len(selected_plants)):
         window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
-
+        
     
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
@@ -160,7 +160,7 @@ plants = [[], [],[],[],[]]
 def on_mouse_up(event):
     global current, plant_type, sunCoin, highlighted_slot
     x,y = current
-    if y > 0 and board[y-1][x] == 0 and y < count_y(c.BOARD_SIZE_Y)-5:
+    if y > 0 and y < 6 and board[y-1][x] == 0 and y < count_y(c.BOARD_SIZE_Y)-5:
         board[y-1][x] = plant_type
         if plant_type == 2:
             plants[y-1].append([x, y, c.SUNFLOWERHP, 0, 2, 30, 0])# x,y, HP, mode, plant type,timer
@@ -275,7 +275,7 @@ def move_bullets():  # updatuje polohu střel
     for bullet in bullets:
         bullet[0] += c.PEASHOOTER_SPEED
         pygame.draw.rect(window, c.BULLET_COLOR, (bullet[0], bullet[1], c.BULLET_SIZE, c.BULLET_SIZE))
-        if bullet[0] > 1200:
+        if bullet[0] > count_x(10):
             bullets.remove(bullet)
         
             
@@ -342,9 +342,11 @@ def check_contact():
         if len(normalZombiesList[line]) >0:
             if bullet[0] > normalZombiesList[line][0][0] + 25 and bullet[0] > normalZombiesList[line][0][0] + 26 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED: # if hit: -1HP, bullet remove
                 normalZombiesList[line][0][3] -= 350
+                print(normalZombiesList[line][0][3])
                 bullets.remove(bullet)
+                print("a")
                 
-            if normalZombiesList[line][0][3] == 0:
+            if normalZombiesList[line][0][3] <= 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
     for boomerang in boomerangs: # boomerang contact check
         line = int(boomerang[2] // c.SQUARE_SIZE_Y) -1
@@ -353,7 +355,7 @@ def check_contact():
                 
                 if boomerang[1] >= zombik[0]+50 and boomerang[1] < zombik[0]+ 52 + c.ZOMBIE_SPEED*c.BOOMERANG_SPEED:
                     zombik[3] -= 200
-                if normalZombiesList[line][0][3] == 0:
+                if normalZombiesList[line][0][3] <= 0:
                     normalZombiesList[line].remove(zombik)
 
 def mower_move():
@@ -561,6 +563,7 @@ def game_input0():
             on_mouse_up0(event)
             
 all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage, c.potatoeBombImage, c.laserBeanImage]#addplant
+num_of_plants = len(all_plants_images)
 selected_plants = []
 for i in range(c.NUM_PLANTS):
     selected_plants.append(0)
@@ -600,7 +603,7 @@ def on_mouse_up0(event):
             
     elif y == 5 and x == 9:
         start_game()
-    if y == 0:
+    if y == 0 and x <= 4:
         selected_plants.remove(selected_plants[x])
         selected_plants.append(0)
         
