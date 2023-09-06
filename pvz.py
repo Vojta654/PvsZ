@@ -3,6 +3,7 @@ import Constants as c
 bullets = []
 suns = []
 mowers = []
+menu_timers = []
 pygame.init()
 clock = pygame.time.Clock()
 sunCoin = 100
@@ -40,7 +41,7 @@ for i in range(1, 6):
 
 def draw_board():
     global color
-    global plant_type
+    global plant_type, menu_timers
     window.fill(c.SQUARE01_COLOR)
     odd = 0
     pygame.draw.rect(window, c.MENU_COLOR, (0, 0, count_x(c.BOARD_SIZE_X), c.MENU_SIZE))
@@ -62,11 +63,15 @@ def draw_board():
 
 
 
-
     #menu - obrázky rostlin + box na počítání peněz
     for index in range(len(selected_plants)):
         window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
-        
+        #čas na znovu postavení kytky
+        menu_timers[index] -= 1
+        if round( menu_timers[index]/30) > 0:
+            font = pygame.font.Font('HERMES 1943.ttf', 32)
+            text = font.render(str(round((menu_timers[index])/c.FPS)), True, c.WHITE)
+            window.blit(text, (count_x(index) + 80, 1))
     
     pygame.draw.rect(window, c.WHITE, c.MONEY_COUNTER_BOX) ##### rámeček s textem
     font = pygame.font.Font('HERMES 1943.ttf', 32)
@@ -98,8 +103,21 @@ def on_mouse_motion(event):
     y = my // c.SQUARE_SIZE_Y
     current = x, y
 
+def fps(ticks):
+    return ticks * c.FPS
 
 plant_type = 0
+timers = {
+    2 : fps(4),
+    3 : fps(5),
+    4 : fps(6),
+    5 : fps(6),
+    6 : fps(10),
+    7 : fps(10),
+    8 : fps(8),
+    0 : 0
+    #addplant
+}
 prizes = {
     2 : 50,
     3 : 100,
@@ -114,33 +132,33 @@ prizes = {
 remove_mode = 0
 highlighted_slot = None
 def on_key_down(event):
-    global highlighted_slot, remove_mode
+    global highlighted_slot, remove_mode, highlighted_slot
     global plant_type
     plant_type = 0
     if event.key == pygame.K_q:#slot1
         plant_type = selected_plants[0]
-        if check_sunCoin(plant_type):
+        if check_sunCoin(plant_type) and check_timer(0):
             highlighted_slot = 0
         
         
     elif event.key == pygame.K_w: #slot2
         plant_type = selected_plants[1]
-        if check_sunCoin(plant_type):
+        if check_sunCoin(plant_type) and check_timer(1):
             highlighted_slot = 1
     
     elif event.key == pygame.K_e: #slot3
         plant_type = selected_plants[2]
-        if check_sunCoin(plant_type):
+        if check_sunCoin(plant_type) and check_timer(2):
             highlighted_slot = 2
         
     elif event.key == pygame.K_r: #slot4
         plant_type = selected_plants[3]
-        if check_sunCoin(plant_type):
+        if check_sunCoin(plant_type) and check_timer(3):
             highlighted_slot = 3
         
     elif event.key == pygame.K_t: #slot5
         plant_type = selected_plants[4]
-        if check_sunCoin(plant_type):
+        if check_sunCoin(plant_type) and check_timer(4):
             highlighted_slot = 4
     
     elif event.key == pygame.K_BACKSPACE:
@@ -155,7 +173,16 @@ def check_sunCoin(typ):
         plant_type = 0
         return False
         
-     
+def check_timer(slot):
+    global plant_type, menu_timers
+    if menu_timers[slot] <=0:
+        return True
+    else:
+        plant_type = 0
+        highlighted_slot = None
+        return False
+    
+   
 plants = [[], [],[],[],[]]
 def on_mouse_up(event):
     global current, plant_type, sunCoin, highlighted_slot
@@ -183,6 +210,8 @@ def on_mouse_up(event):
         elif plant_type == 8:
             plants[y-1].append([x, y, c.LASER_BEAN_HP, 0, 8, 1, 0])# x,y, HP, mode, plant type, timer, image_num
             sunCoin -= prizes[8]
+        if highlighted_slot != None:
+            menu_timers[highlighted_slot] = timers[plant_type]  
         plant_type = 0
         highlighted_slot = None
 
@@ -603,6 +632,7 @@ def on_mouse_up0(event):
             
     elif y == 5 and x == 9:
         start_game()
+        
     if y == 0 and x <= 4:
         selected_plants.remove(selected_plants[x])
         selected_plants.append(0)
@@ -619,9 +649,12 @@ def draw_selected_plants():
             window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
     
 def start_game():
-    global menu
+    global menu, menu_timers, selected_plants
     if 0 not in selected_plants:
         menu = False
+    for cislo in range(c.NUM_PLANTS):
+        menu_timers.append(timers[selected_plants[cislo]])
+    print(menu_timers)
 
 menu = True
 def draw_menu():
