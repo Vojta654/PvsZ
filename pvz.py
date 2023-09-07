@@ -175,7 +175,7 @@ def check_sunCoin(typ):
         
 def check_timer(slot):
     global plant_type, menu_timers
-    if menu_timers[slot] <=0:
+    if menu_timers[slot]- 0.5 *c.FPS <=0: #not best solution
         return True
     else:
         plant_type = 0
@@ -371,9 +371,7 @@ def check_contact():
         if len(normalZombiesList[line]) >0:
             if bullet[0] > normalZombiesList[line][0][0] + 25 and bullet[0] > normalZombiesList[line][0][0] + 26 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED: # if hit: -1HP, bullet remove
                 normalZombiesList[line][0][3] -= 350
-                print(normalZombiesList[line][0][3])
                 bullets.remove(bullet)
-                print("a")
                 
             if normalZombiesList[line][0][3] <= 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
@@ -574,8 +572,8 @@ def platns_zombie_contact():
                     
 def loose():
     window.fill(c.BLACK)
-    font = pygame.font.Font('HERMES 1943.ttf', 170)
-    text = font.render("you lost", True, c.RED)
+    font = pygame.font.Font('HERMES 1943.ttf', 80)
+    text = font.render("zomibes ate your brain", True, c.RED)
     window.blit(text, (100, 100))
     pygame.display.flip()
     while True:
@@ -602,26 +600,26 @@ def on_mouse_up0(event):
     x,y = current
     if y == 1:
         if x == 0:
-            print("sunflower")
+            #print("sunflower")
             plant_type = 2
         elif x == 1:
             plant_type = 3
-            print("peashooterImage")
+            #print("peashooterImage")
         elif x == 2:
             plant_type = 4
-            print("boomerangImage")
+            #print("boomerangImage")
         elif x == 3:
             plant_type = 5
-            print("repeaterPeaImages")
+            #print("repeaterPeaImages")
         elif x == 4:
             plant_type = 6
-            print("wallNutImage")
+            #print("wallNutImage")
         elif x == 5:
             plant_type = 7
-            print("potatoeBombImage")
+            #print("potatoeBombImage")
         elif x == 6:
             plant_type = 8
-            print("laserBeanImage")
+            #print("laserBeanImage")
         
         #addplant
         if plant_type >= 2:
@@ -654,7 +652,6 @@ def start_game():
         menu = False
     for cislo in range(c.NUM_PLANTS):
         menu_timers.append(timers[selected_plants[cislo]])
-    print(menu_timers)
 
 menu = True
 def draw_menu():
