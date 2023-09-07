@@ -575,7 +575,7 @@ def platns_zombie_contact():
 def loose():
     window.fill(c.BLACK)
     font = pygame.font.Font('HERMES 1943.ttf', 170)
-    text = font.render("you lost", True, c.RED)
+    text = font.render("zombies ate your brain", True, c.RED)
     window.blit(text, (100, 100))
     pygame.display.flip()
     while True:
