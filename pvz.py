@@ -541,17 +541,14 @@ def updateNormalZombie():
             pygame.draw.rect(window, c.RED, (normalZombiesList[line][zombik][0] + 80, normalZombiesList[line][zombik][1], 30, 10))
             pygame.draw.rect(window, c.GREEN, (normalZombiesList[line][zombik][0] + 80, normalZombiesList[line][zombik][1], current_hp * 30, 10))
             
-
+zombies_health = {
+    0: c.NormalZombieHP,
+    1: c.CONEHEADZOMBIE_HP,
+    2: c.BUCKETHEADZOMBIE_HP
+}
 def create_normal_zombie(lineNum, type):
-    hp = 0
-    if type == 0:
-        hp = c.NormalZombieHP
-    elif type == 1:
-        hp = c.CONEHEADZOMBIE_HP
-    elif type == 2:
-        hp = c.BUCKETHEADZOMBIE_HP
-        
-    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, hp, type])
+    
+    normalZombiesList[lineNum].append([c.ZOMBIE_START_LOCATION, count_y(lineNum+1), 1, zombies_health[type], type])
     #udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku +typ 0, 1, 2 jde; 10, 11, 12 žere
 
 def gamelevel_one():
