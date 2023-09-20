@@ -369,9 +369,10 @@ def check_contact():
     for bullet in bullets: #peashoter bullet contact check
         line = int(bullet[1] // c.SQUARE_SIZE_Y) -1
         if len(normalZombiesList[line]) >0:
-            if bullet[0] > normalZombiesList[line][0][0] + 25 and bullet[0] > normalZombiesList[line][0][0] + 26 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED: # if hit: -1HP, bullet remove
-                normalZombiesList[line][0][3] -= 350
-                bullets.remove(bullet)
+            for zombik in normalZombiesList[line]:
+                if bullet[0] > zombik[0] + 25 and bullet[0] < zombik[0] +30 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED:
+                    zombik[3] -= 350
+                    bullets.remove(bullet)
                 
             if normalZombiesList[line][0][3] <= 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
@@ -472,6 +473,7 @@ def updateNormalZombie():
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
                 if currentZombieImage >= len(c.NormalZombieImages) - 1:
                     currentZombieImage = 0
+                current_hp = normalZombiesList[line][zombik][3] / c.NormalZombieHP
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
@@ -484,6 +486,7 @@ def updateNormalZombie():
                     currentZombieImage = 0
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 window.blit(c.NormalZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
+                current_hp = normalZombiesList[line][zombik][3] / c.NormalZombieHP
                 
             # cone head zombie
             if normalZombiesList[line][zombik][4] == 1: # animace walk
@@ -493,6 +496,7 @@ def updateNormalZombie():
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
                 if currentZombieImage >= len(c.ConeheadZombieImages) -1:
                     currentZombieImage = 0
+                current_hp = normalZombiesList[line][zombik][3] / c.CONEHEADZOMBIE_HP
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
@@ -504,6 +508,7 @@ def updateNormalZombie():
                 currentZombieImage += 0.5  # další snímek v animaci
                 if currentZombieImage >= len(c.ConeheadZombieAttackImages) - 1:
                     currentZombieImage = 0
+                current_hp = normalZombiesList[line][zombik][3] / c.CONEHEADZOMBIE_HP
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 window.blit(c.ConeheadZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y - 5))
                 
@@ -516,6 +521,7 @@ def updateNormalZombie():
                 zombie_x -= c.ZOMBIE_SPEED #posunutí do leva
                 if currentZombieImage >= len(c.BucketheadZombieImages) -1:
                     currentZombieImage = 0
+                current_hp = normalZombiesList[line][zombik][3] / c.BUCKETHEADZOMBIE_HP
                 #uložení změněných hodnot
                 normalZombiesList[line][zombik][0] = zombie_x
                 normalZombiesList[line][zombik][2] = currentZombieImage
@@ -527,8 +533,14 @@ def updateNormalZombie():
                 currentZombieImage += 0.4  # další snímek v animaci
                 if currentZombieImage >= len(c.BucketheadZombieAttackImages) -1:
                     currentZombieImage = 0
+                current_hp = normalZombiesList[line][zombik][3] / c.BUCKETHEADZOMBIE_HP
                 normalZombiesList[line][zombik][2] = currentZombieImage
                 window.blit(c.BucketheadZombieAttackImages[round(currentZombieImage)], (zombie_x, zombie_y))
+            
+            #draw health bar
+            pygame.draw.rect(window, c.RED, (normalZombiesList[line][zombik][0] + 80, normalZombiesList[line][zombik][1], 30, 10))
+            pygame.draw.rect(window, c.GREEN, (normalZombiesList[line][zombik][0] + 80, normalZombiesList[line][zombik][1], current_hp * 30, 10))
+            
 
 def create_normal_zombie(lineNum, type):
     hp = 0
