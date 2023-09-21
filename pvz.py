@@ -349,7 +349,7 @@ def create_laser(plant, index):
     if plant[5] % count_ticks(2) == 0:
         lasers.append([count_x(plant[0]), count_y(plant[1]), c.FPS])
         for zombik in normalZombiesList[index]:
-            if zombik[0] > count_x(plant[0]) and zombik[0] < window.get_width() - 20:    
+            if zombik[0] > count_x(plant[0]):    
                 zombik[3] -= 150
                 if zombik[3] <= 0:
                     normalZombiesList[index].remove(zombik) 
@@ -372,7 +372,11 @@ def check_contact():
             for zombik in normalZombiesList[line]:
                 if bullet[0] > zombik[0] + 25 and bullet[0] < zombik[0] +30 + c.ZOMBIE_SPEED * c.PEASHOOTER_SPEED:
                     zombik[3] -= 350
-                    bullets.remove(bullet)
+                    try:
+                        bullets.remove(bullet)
+                    except:
+                        print(bullet)
+                        print("bullet remove error")
                 
             if normalZombiesList[line][0][3] <= 0:
                 normalZombiesList[line].remove(normalZombiesList[line][0])
