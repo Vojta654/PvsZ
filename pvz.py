@@ -115,6 +115,7 @@ timers = {
     6 : fps(10),
     7 : fps(10),
     8 : fps(8),
+    9 : fps(1),
     0 : 0
     #addplant
 }
@@ -126,6 +127,7 @@ prizes = {
     6 : 50,
     7 : 25,
     8 : 200,
+    9 : 10,
     0 : 0
     #addplant
 }
@@ -210,6 +212,10 @@ def on_mouse_up(event):
         elif plant_type == 8:
             plants[y-1].append([x, y, c.LASER_BEAN_HP, 0, 8, 1, 0])# x,y, HP, mode, plant type, timer, image_num
             sunCoin -= prizes[8]
+        elif plant_type == 9:
+            plants[y-1].append([x, y, 1, 0, 9])# x,y, HP, mode, plant type
+            sunCoin -= prizes[9]
+        #addplant
         if highlighted_slot != None:
             menu_timers[highlighted_slot] = timers[plant_type]  
         plant_type = 0
@@ -439,8 +445,9 @@ def draw_plants():
                 window.blit(c.potatoeBombImage, (count_x(plant[0]) +10, count_y(plant[1]) +50))#potatoe bomb
             elif plant[4] ==8:
                 window.blit(c.laserBeanImage, (count_x(plant[0]) +10, count_y(plant[1]) +10))#laser bean
+            elif plant[4] ==9:
+                window.blit(c.spikeWeedImage, (count_x(plant[0])-10, count_y(plant[1]) +125))#spikeweed
             #addplant
-
 
 def plants_hp():
     for index in range(len(plants)):
@@ -564,7 +571,7 @@ def gamelevel_one():
         difficulty =1
     if round(time) % 60 == 0 and round(time) > 1:
         difficulty = 2 
-        
+
     
 def platns_zombie_contact():
     for ind in range(5):
@@ -572,11 +579,16 @@ def platns_zombie_contact():
         for plant in plants[ind]:
             for zombik in zombieLine:
                 zombie_x = zombik[0]
-                if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
-                    zombik[4] += 10 #set zombik animation to eat plant
-                    plant[2] -= 1 # set plant to remove HPs
+                if plant[4] == 9:  # spikeWeed
+                    if zombie_x <= count_x(plant[0])+20 and zombie_x >= count_x(plant[0]) - 120:
+                        zombik[3] -= 2
+                    if zombik[3] <= 0:
+                        normalZombiesList[ind].remove(zombik)
+                else:
+                    if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
+                        plant[2] -= 1 #  remove HP
+                        zombik[4] += 10  # set zombik animation to eat plant
                     if plant[4] == 7: #potatoe bomb
-                        plant[2] = -1
                         normalZombiesList[ind].remove(zombik)
                         for zombie in normalZombiesList[ind]:
                             if abs(zombie[0] - zombik[0]) <= 50:
@@ -602,7 +614,7 @@ def game_input0():
         elif event.type == pygame.MOUSEBUTTONUP:
             on_mouse_up0(event)
             
-all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage, c.potatoeBombImage, c.laserBeanImage]#addplant
+all_plants_images = [c.sunflowerImage, c.peashooterImage, c.boomerangImage, c.repeaterPeaImages[3], c.wallNutImage, c.potatoeBombImage, c.laserBeanImage, c.spikeWeedImage]#addplant
 num_of_plants = len(all_plants_images)
 selected_plants = []
 for i in range(c.NUM_PLANTS):
@@ -633,7 +645,9 @@ def on_mouse_up0(event):
         elif x == 6:
             plant_type = 8
             #print("laserBeanImage")
-        
+        elif x == 7:
+            plant_type = 9
+            #print("spikeWeedImage")
         #addplant
         if plant_type >= 2:
             for index in range(len(selected_plants)):

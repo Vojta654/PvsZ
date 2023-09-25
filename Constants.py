@@ -123,3 +123,5 @@ for i in range(15):
 wallNutImage = pygame.image.load("data/Plants/WallNut/wallNut.png")
 potatoeBombImage = pygame.image.load("data/Plants/PotatoeBomb/potatoeBomb.png")
 laserBeanImage = pygame.image.load("data/Plants/LaserBean/laserBean.png")
+sW = pygame.image.load("data/Plants/SpikeWeed/spikeWeed.webp")
+spikeWeedImage = pygame.transform.scale(sW, (150, 45))
