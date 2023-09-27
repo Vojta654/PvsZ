@@ -115,7 +115,7 @@ timers = {
     6 : fps(10),
     7 : fps(10),
     8 : fps(8),
-    9 : fps(1),
+    9 : fps(7),
     0 : 0
     #addplant
 }
@@ -468,7 +468,7 @@ def plants_hp():
 
 
 def updateNormalZombie():
-    for line in range(len(normalZombiesList)): #pro každý řádek
+    for line in range(len(normalZombiesList)):  # pro každý řádek
         for zombik in range(len(normalZombiesList[line])):
             zombie_x = normalZombiesList[line][zombik][0]
             if zombie_x < c.SQUARE_SIZE_X - 70:
@@ -588,11 +588,11 @@ def platns_zombie_contact():
                     if zombie_x <= count_x(plant[0]) and zombie_x >= count_x(plant[0]) - 100:
                         plant[2] -= 1 #  remove HP
                         zombik[4] += 10  # set zombik animation to eat plant
-                    if plant[4] == 7: #potatoe bomb
-                        normalZombiesList[ind].remove(zombik)
-                        for zombie in normalZombiesList[ind]:
-                            if abs(zombie[0] - zombik[0]) <= 50:
-                                normalZombiesList[ind].remove(zombie)
+                        if plant[4] == 7: #potatoe bomb
+                            normalZombiesList[ind].remove(zombik)
+                            for zombie in normalZombiesList[ind]:
+                                if abs(zombie[0] - zombik[0]) <= 50:
+                                    normalZombiesList[ind].remove(zombie)
 
                     
 def loose():
