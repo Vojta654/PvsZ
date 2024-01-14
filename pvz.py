@@ -314,8 +314,8 @@ def move_bullets():  # updatuje polohu střel
             bullets.remove(bullet)
         
             
-def sunflower_suns(plant):
-    if plant[5] % count_ticks(5) == 0:
+def sunflower_suns(plant): #spawning suns
+    if plant[5] % count_ticks(8) == 0:
         suns.append([count_x(plant[0]) + random.randint(0, 68), count_y(plant[1]) + 100])
 
     plant[5] +=1
@@ -665,13 +665,28 @@ def on_mouse_up0(event):
 def draw_all_plants():
     for index in range(len(all_plants_images)):
         plant = all_plants_images[index]
-        window.blit(plant, (count_x(index), count_y(1) + 20))
+        if index == 1:#správné zobrzení peashooter
+            window.blit(plant, (count_x(index) + 15, count_y(1) + 20))
+
+        elif index == 2:#správné zobrzení boomerang
+            window.blit(plant, (count_x(index), count_y(1) ))
+
+        elif index == 5:#správné zobrzení bomby
+            window.blit(plant, (count_x(index), count_y(1) + 40))
+
+        elif index == 7:#správné zobrzení spike
+            window.blit(plant, (count_x(index), count_y(1) + 80))
+        else: #ostatní
+            window.blit(plant, (count_x(index), count_y(1) + 20))
     
 
 def draw_selected_plants():
     for index in range(c.NUM_PLANTS):
         if selected_plants[index] != 0:
-            window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
+            if selected_plants[index] == 9:
+                window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index) - 8, count_y(0) + 100))
+            else:
+                window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
     
 def start_game():
     global menu, menu_timers, selected_plants
