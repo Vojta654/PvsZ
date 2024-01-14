@@ -9,5 +9,6 @@ Jednotlivé kroky
 
 plants : # x,y, HP, mode, plant type,timer, image
 #udaje pro jednotlivého zombíka [x souřadnice, y souřadnice, aktuální snímek, životy, mode] mode = jde/žere kytku
+mower: []
 
 nové kytky - bodlák na zemi, možná kanón, velká slunečnice 

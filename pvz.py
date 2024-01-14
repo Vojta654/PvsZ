@@ -34,8 +34,8 @@ for y in range(0, c.BOARD_SIZE_Y, 1):
 for i in range(c.BOARD_SIZE_Y):  # tam kde bude jedna se dají sekačky
     board[i][0] = 1
 normalZombiesList  = [[],[],[],[],[]] #jedbotlivé pole je jedna řádka ve hře
-mowerList = []
 
+mowerList = []
 for i in range(1, 6):
     mowerList.append([0, count_y(i), 0])
 
@@ -224,7 +224,8 @@ def on_mouse_up(event):
             menu_timers[highlighted_slot] = timers[plant_type]  
         plant_type = 0
         highlighted_slot = None
-
+    if y > 0 and x ==0:
+        mowerList[y-1][2] = 1
 def on_mouse_down(event):
     global sunCoin, current, remove_mode
     x,y = current
@@ -476,7 +477,7 @@ def updateNormalZombie():
         for zombik in range(len(normalZombiesList[line])):
             zombie_x = normalZombiesList[line][zombik][0]
             if zombie_x < c.SQUARE_SIZE_X - 70:
-                mowerList[line][2] = 1
+                mowerList[line][2] = 1 #mower go
             if zombie_x < -80:
                 loose()
             zombie_y = normalZombiesList[line][zombik][1]
@@ -716,7 +717,7 @@ def draw_menu():
 
 def text_info():
     font = pygame.font.Font('HERMES 1943.ttf', 30)
-    guideText = ["GUIDE:", "now select plants with left mouse button", "press: q, w, e, r, t  to plant your defence","you can destroy plants with BACKSPACE button","use right mouse button to use ability(maybe in the future)", "GOOD LUCK, have fun"]
+    guideText = ["GUIDE:", "now select plants with left mouse button", "press: q, w, e, r, t  to plant your defence","you can destroy plants with BACKSPACE button","you can set off mowers earlier by clicking on them", "use right mouse button to use ability(maybe in the future)", "GOOD LUCK, have fun"]
     for index in range(len(guideText)):
         text = font.render(guideText[index], True, c.BLACK)
         window.blit(text, (10, 350 + 50*index))
