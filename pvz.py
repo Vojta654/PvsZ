@@ -65,7 +65,11 @@ def draw_board():
 
     #menu - obrázky rostlin + box na počítání peněz
     for index in range(len(selected_plants)):
-        window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
+        if selected_plants[index] == 9:#spike plant zarovnání
+            window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index)-10, count_y(0) + 90))
+
+        else:
+            window.blit(all_plants_images[selected_plants[index] - 2], (count_x(index), count_y(0) + 20))
         #čas na znovu postavení kytky
         menu_timers[index] -= 1
         if round( menu_timers[index]/30) > 0:
@@ -709,11 +713,21 @@ def draw_menu():
     #confirmation button
     pygame.draw.rect(window, c.YELLOW, (count_x(9), count_y(5), c.SQUARE_SIZE_X, c.SQUARE_SIZE_Y))
 
+
+def text_info():
+    font = pygame.font.Font('HERMES 1943.ttf', 30)
+    guideText = ["GUIDE:", "now select plants with left mouse button", "press: q, w, e, r, t  to plant your defence","you can destroy plants with BACKSPACE button","use right mouse button to use ability(maybe in the future)", "GOOD LUCK, have fun"]
+    for index in range(len(guideText)):
+        text = font.render(guideText[index], True, c.BLACK)
+        window.blit(text, (10, 350 + 50*index))
+
+
 while menu:#selecting menu
     game_input0()
     draw_menu()
     draw_all_plants()
     draw_selected_plants()
+    text_info()
     pygame.display.flip()
     
 
